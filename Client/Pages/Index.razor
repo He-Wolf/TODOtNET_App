@@ -1,11 +1,34 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
+<div class="jumbotron text-center" style="margin-bottom:0">
+    <h1 class="display-4">TODO web app</h1>
+    <p class="lead">An ASP.NET Core full-stack C# single-page web application</p>
+</div>
 
-<p>Welcome to your new app.</p>
 
-<RadzenButton Text="@text"></RadzenButton>
+<div class="row row-eq-height">
+    <div class="col-md-3"></div>
+    <div class="col-md-3">
+        <RadzenCard>
+            <p>The application was written in C# using the following frameworks and technologies:</p>
+            <ul>
+                <li>ASP.NET Core Blazor Webassembly frontend</li>
+                <li>Radzen UI</li>
+                <li>ASP.NET Core backend</li>
+                <li>SQLite db + Entity Core ORM</li>
+                <li>Identity Core + JSON Web Token</li>
+            </ul>
+        </RadzenCard>
+    </div>
+    <div class="col-md-3">
+        <RadzenCard>
+            <p class="card-text">You can create an own profile. With your given password and username you can log in an manage your profile.</p>
+            <p class="card-text">This is a simple CRUD application in which you can add, modify, remove and display todo items.</p>
+        </RadzenCard>
+    </div>
+    <div class="col-md-3"></div>
+</div>
 
 @code{
-    string text = "Hi";
+
 }
