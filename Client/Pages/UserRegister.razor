@@ -1,8 +1,8 @@
 @page "/register"
 
 <div class="row mx-2 mb-2 justify-content-md-center">
-    <div class="col col-lg-2"></div>
-    <div class="col-md-auto">
+    <div class="col"></div>
+    <div class="col-md-4">
         <h3>Register a new account!</h3>
         <RadzenCard>
                 <RadzenTemplateForm Data="@user" Submit="@((User args) => { Submit(args); })">
@@ -54,14 +54,14 @@
                     </div>
                     <div class="row justify-content-center">
                         <div class="col-md-12 d-flex align-items-end justify-content-center" style="margin-top: 16px;">
-                            <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Text="Save" />
+                            <RadzenButton ButtonType="ButtonType.Submit" Icon="check" Text="Register" />
                             <RadzenButton ButtonStyle="ButtonStyle.Secondary" Icon="cancel" style="display: inline-block; margin-left: 10px;" Text="Cancel" Click="@Cancel" />
                         </div>
                     </div>
                 </RadzenTemplateForm>
         </RadzenCard>
     </div>
-    <div class="col col-lg-2"></div>
+    <div class="col"></div>
 </div>
 
 @code {
