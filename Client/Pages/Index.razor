@@ -1,32 +1,37 @@
 ﻿@page "/"
 
-<div class="jumbotron text-center" style="margin-bottom:0">
+<div class="jumbotron text-center">
     <h1 class="display-4">TODO web app</h1>
     <p class="lead">An ASP.NET Core full-stack C# single-page web application</p>
 </div>
 
 
 <div class="row row-eq-height">
-    <div class="col-md-3"></div>
-    <div class="col-md-3">
-        <RadzenCard>
-            <p>The application was written in C# using the following frameworks and technologies:</p>
-            <ul>
-                <li>ASP.NET Core Blazor Webassembly frontend</li>
-                <li>Radzen UI</li>
-                <li>ASP.NET Core backend</li>
-                <li>SQLite db + Entity Core ORM</li>
-                <li>Identity Core + JSON Web Token</li>
-            </ul>
+    <div class="col-lg-2"></div>
+    <div class="col-lg-4">
+        <RadzenCard class="h-100">
+            <div class="card-body">
+                <p class="card-text">The application was written in C# using the following frameworks and technologies:</p>
+                <ul class="card-text">
+                    <li>ASP.NET Core Blazor Webassembly frontend</li>
+                    <li>Radzen UI</li>
+                    <li>ASP.NET Core backend</li>
+                    <li>SQLite db + Entity Core ORM</li>
+                    <li>Identity Core + JSON Web Token</li>
+                </ul>
+            </div>
         </RadzenCard>
     </div>
-    <div class="col-md-3">
-        <RadzenCard>
-            <p class="card-text">You can create an own profile. With your given password and username you can log in an manage your profile.</p>
-            <p class="card-text">This is a simple CRUD application in which you can add, modify, remove and display todo items.</p>
+    <div class="col-lg-4">
+        <RadzenCard class="h-100">
+            <div class="card-body">
+                <p class="card-text">This is a simple TODO manager web app. After creating your own profile, you can log in with your password and username to manage your profile and todo items.</p>
+                <br>
+                <p class="card-text">You can execute CRUD operations to add, modify, remove and display todo items.</p>
+            </div>
         </RadzenCard>
     </div>
-    <div class="col-md-3"></div>
+    <div class="col-lg-2"></div>
 </div>
 
 @code{
