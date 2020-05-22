@@ -1,0 +1,92 @@
+@page "/register"
+
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <h3>Register</h3>
+        <RadzenCard>
+                <RadzenTemplateForm Data="@user" Submit="@((User args) => { Submit(args); })">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <RadzenFieldset Text="Register">
+                                <div class="row">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Email Address" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <RadzenTextBox style="width: 100%;" Name="Email" @bind-Value="user.Email" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Firstname" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <RadzenTextBox style="width: 100%;" Name="Firstname" @bind-Value="user.Firstname" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Lastname" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <RadzenTextBox style="width: 100%;" Name="Lastname" @bind-Value="user.Lastname" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Password" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <RadzenPassword style="width: 100%;" Name="Password" @bind-Value="user.Password" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Confirm Password" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <RadzenPassword style="width: 100%;" Name="ConfirmPassword" @bind-Value="user.ConfirmPassword" />
+                                    </div>
+                                </div>
+                            </RadzenFieldset>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col-md-12 d-flex align-items-end justify-content-center" style="margin-top: 16px;">
+                            <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Text="Save" />
+                            <RadzenButton ButtonStyle="ButtonStyle.Light" Icon="cancel" style="display: inline-block; margin-left: 10px;" Text="Cancel" Click="@Cancel" />
+                        </div>
+                    </div>
+                </RadzenTemplateForm>
+        </RadzenCard>
+    </div>
+    <div class="col-md-4"></div>
+</div>
+
+@code {
+    public class User
+    {
+        public string Email { get; set; }
+        public string Firstname { get; set; }
+        public string Lastname { get; set; }
+        public string Password { get; set; }
+        public string ConfirmPassword { get; set; }
+        
+    }
+
+    User user = new User()
+    {
+        //
+    };
+
+    void Submit(User arg)
+    {
+        //
+    }
+
+    void Cancel()
+    {
+        //
+    }
+}
