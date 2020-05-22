@@ -1,0 +1,34 @@
+@page "/login"
+
+<div class="row mx-2 mb-2 justify-content-md-center">
+    <div class="col"></div>
+    <div class="col-md-4">
+        <h3>Login with your account!</h3>
+        <RadzenCard>
+            <RadzenFieldset Text="Login">
+                <RadzenLogin AllowResetPassword="false" 
+                                Login="@((args) => Login(args, "Login with register"))" 
+                                Register="@((args) => Register("Login with register"))" Style="margin-bottom: 20px;" />
+            </RadzenFieldset>
+        </RadzenCard>
+    </div>
+    <div class="col"></div>
+</div>
+
+
+@code{
+    string userName = "admin";
+    string password = "admin";
+
+    void Login(LoginArgs args, string name)
+    {
+        System.Console.WriteLine($"{name} -> Username: {args.Username} and password: {args.Password}");
+        StateHasChanged();
+    }
+
+    void Register(string name)
+    {
+        System.Console.WriteLine($"{name} -> Register");
+        StateHasChanged();
+    }
+}

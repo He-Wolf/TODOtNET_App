@@ -1,11 +1,10 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="sidebar">
-    <NavMenu/>
-</div>
+<NavMenu/>
 
-<div class="main">
-    <div class="content px-4">
-        @Body
-    </div>
-</div>
+<header class="jumbotron text-center">
+    <h1 class="display-4">TODO web app</h1>
+    <p class="lead">An ASP.NET Core full-stack C# single-page web application</p>
+</header>
+
+@Body
