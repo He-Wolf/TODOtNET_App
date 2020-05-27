@@ -17,16 +17,19 @@ namespace TodoApi.Client.Services
         private readonly JWTAuthStateProvider _authenticationStateProvider;
 
         public AuthService(HttpClient httpClient,
-                           JWTAuthStateProvider authenticationStateProvider)
+                           AuthenticationStateProvider authenticationStateProvider)
         {
             _httpClient = httpClient;
-            _authenticationStateProvider = authenticationStateProvider;
+            _authenticationStateProvider = authenticationStateProvider as JWTAuthStateProvider;
         }
 
         public async Task<TokenViewModel> Register(RegisterViewModel model)
         {
             var response = await _httpClient.PostAsJsonAsync<RegisterViewModel>("/Register", model);
             var content = await response.Content.ReadFromJsonAsync<TokenViewModel>();
+            
+            await _authenticationStateProvider.SetTokenAsync(content.token);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", content.token);
 
             return content;
         }
@@ -36,13 +39,7 @@ namespace TodoApi.Client.Services
             var response = await _httpClient.PostAsJsonAsync<LoginViewModel>("/Login", model);
             var content = await response.Content.ReadFromJsonAsync<TokenViewModel>();
 
-            if (!response.IsSuccessStatusCode)
-            {
-                return content;
-            }
-
             await _authenticationStateProvider.SetTokenAsync(content.token);
-
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", content.token);
 
             return content;
@@ -50,7 +47,8 @@ namespace TodoApi.Client.Services
 
         public async Task Logout()
         {
-
+            await _authenticationStateProvider.SetTokenAsync(null);
+            _httpClient.DefaultRequestHeaders.Authorization = null;
         }
     }
 }

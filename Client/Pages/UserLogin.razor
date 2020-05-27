@@ -1,34 +1,50 @@
 @page "/login"
 
+@using TodoApi.Shared.Models
+@using TodoApi.Client.Services
+@inject NavigationManager navigationManager
+@inject IAuthService AuthService
+
 <div class="row mx-2 mb-2 justify-content-md-center">
     <div class="col"></div>
     <div class="col-md-4">
-        <h3>Login with your account!</h3>
-        <RadzenCard>
-            <RadzenFieldset Text="Login">
-                <RadzenLogin AllowResetPassword="false" 
-                                Login="@((args) => Login(args, "Login with register"))" 
-                                Register="@((args) => Register("Login with register"))" Style="margin-bottom: 20px;" />
-            </RadzenFieldset>
-        </RadzenCard>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Please enter your details</h5>
+                <EditForm Model="@user" OnValidSubmit="Login">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="form-group">
+                        <label for="inputEmail">Email address</label>
+                        <input type="email" class="form-control" id="inputEmail" @bind-value="user.Email" placeholder="example@email.com">
+                        <ValidationMessage For="@(() => user.Email)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword">Password</label>
+                        <input type="password" class="form-control" id="inputPassword" @bind-value="user.Password" placeholder="SecretPass123.">
+                        <ValidationMessage For="@(() => user.Password)" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                    <button type="button" class="btn btn-primary" @onclick="@(() => { Register(); })">Register</button>
+                </EditForm>
+            </div>
+        </div>
     </div>
     <div class="col"></div>
 </div>
 
 
 @code{
-    string userName = "admin";
-    string password = "admin";
+    private LoginViewModel user = new LoginViewModel();
 
-    void Login(LoginArgs args, string name)
+    private async Task Login()
     {
-        System.Console.WriteLine($"{name} -> Username: {args.Username} and password: {args.Password}");
-        StateHasChanged();
+        var result = await AuthService.Login(user);
+        navigationManager.NavigateTo("/dashboard");
     }
 
-    void Register(string name)
+    private void Register()
     {
-        System.Console.WriteLine($"{name} -> Register");
-        StateHasChanged();
+        navigationManager.NavigateTo("/register");
     }
 }
