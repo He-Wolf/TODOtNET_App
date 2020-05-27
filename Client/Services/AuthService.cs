@@ -25,7 +25,7 @@ namespace TodoApi.Client.Services
 
         public async Task<TokenViewModel> Register(RegisterViewModel model)
         {
-            var response = await _httpClient.PostAsJsonAsync<RegisterViewModel>("/Register", model);
+            var response = await _httpClient.PostAsJsonAsync<RegisterViewModel>("/Account/Register", model);
             var content = await response.Content.ReadFromJsonAsync<TokenViewModel>();
             
             await _authenticationStateProvider.SetTokenAsync(content.token);
@@ -36,7 +36,7 @@ namespace TodoApi.Client.Services
 
         public async Task<TokenViewModel> Login(LoginViewModel model)
         {
-            var response = await _httpClient.PostAsJsonAsync<LoginViewModel>("/Login", model);
+            var response = await _httpClient.PostAsJsonAsync<LoginViewModel>("/Account/Login", model);
             var content = await response.Content.ReadFromJsonAsync<TokenViewModel>();
 
             await _authenticationStateProvider.SetTokenAsync(content.token);
