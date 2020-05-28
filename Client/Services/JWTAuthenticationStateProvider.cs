@@ -7,58 +7,62 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 
-public class JWTAuthStateProvider : AuthenticationStateProvider
+namespace TodoApi.Client.Services
 {
-    private readonly IJSRuntime _jsRuntime;
-
-    public JWTAuthStateProvider(IJSRuntime jsRuntime)
+    public class JWTAuthStateProvider : AuthenticationStateProvider
     {
-        _jsRuntime = jsRuntime;
-    }
-    
-    public async Task<string> GetTokenAsync()
-        => await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");
+        private readonly IJSRuntime _jsRuntime;
 
-    public async Task SetTokenAsync(string token)
-    {
-        if (token == null)
+        public JWTAuthStateProvider(IJSRuntime jsRuntime)
         {
-            await _jsRuntime.InvokeAsync<object>("localStorage.removeItem", "authToken");
-        }
-        else
-        {
-            await _jsRuntime.InvokeAsync<object>("localStorage.setItem", "authToken", token);
+            _jsRuntime = jsRuntime;
         }
         
-        NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
-    }
-    public override async Task<AuthenticationState> GetAuthenticationStateAsync()
-    {
-        var token = await GetTokenAsync();
+        public async Task<string> GetTokenAsync()
+            => await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");
 
-        var identity = string.IsNullOrEmpty(token)
-            ? new ClaimsIdentity()
-            : new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
-        var user = new ClaimsPrincipal(identity);
-
-        return new AuthenticationState(user);
-    }
-
-    private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
-    {
-        var payload = jwt.Split('.')[1];
-        var jsonBytes = ParseBase64WithoutPadding(payload);
-        var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
-        return keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString()));
-    }
-
-    private byte[] ParseBase64WithoutPadding(string base64)
-    {
-        switch (base64.Length % 4)
+        public async Task SetTokenAsync(string token)
         {
-            case 2: base64 += "=="; break;
-            case 3: base64 += "="; break;
+            if (token == null)
+            {
+                await _jsRuntime.InvokeAsync<object>("localStorage.removeItem", "authToken");
+            }
+            else
+            {
+                await _jsRuntime.InvokeAsync<object>("localStorage.setItem", "authToken", token);
+            }
+            
+            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
-        return Convert.FromBase64String(base64);
+        public override async Task<AuthenticationState> GetAuthenticationStateAsync()
+        {
+            var token = await GetTokenAsync();
+
+            var identity = string.IsNullOrEmpty(token)
+                ? new ClaimsIdentity()
+                : new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
+                
+            var user = new ClaimsPrincipal(identity);
+
+            return new AuthenticationState(user);
+        }
+
+        private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
+        {
+            var payload = jwt.Split('.')[1];
+            var jsonBytes = ParseBase64WithoutPadding(payload);
+            var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
+            return keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString()));
+        }
+
+        private byte[] ParseBase64WithoutPadding(string base64)
+        {
+            switch (base64.Length % 4)
+            {
+                case 2: base64 += "=="; break;
+                case 3: base64 += "="; break;
+            }
+            return Convert.FromBase64String(base64);
+        }
     }
 }

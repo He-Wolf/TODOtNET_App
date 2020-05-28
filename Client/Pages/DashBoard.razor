@@ -1,6 +1,15 @@
 @page "/dashboard"
 @attribute [Authorize]
+@using Microsoft.AspNetCore.Components.Authorization;
+@using System.Net.Http;
+@using System.Net.Http.Headers;
+@using System.Net.Http.Json;
 @using TodoApi.Shared.Models
+@using TodoApi.Client.Services
+@inject AuthenticationStateProvider _authStateProv
+@inject IJSRuntime _jsRuntime
+@inject HttpClient _httpClient
+
 
 <AuthorizeView>
     <div class="row mx-2 mb-2 justify-content-md-center">
@@ -8,7 +17,7 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Hello @context.User.Identity.Name</h5>
+                    <h5 class="card-title">Hello @user.FirstName,</h5>
                     <p class="card-text">This is your personal dashboard. Only you can see it.</p>
                 </div>
             </div>
@@ -18,5 +27,19 @@
 </AuthorizeView>
 
 @code{
+    DisplayViewModel user = new DisplayViewModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        JWTAuthStateProvider _jwtAuthStateProv = new JWTAuthStateProvider(_jsRuntime);
+        
+        _jwtAuthStateProv = _authStateProv as JWTAuthStateProvider;
+
+        var token = await _jwtAuthStateProv.GetTokenAsync();
+
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+            
+        user = await _httpClient.GetFromJsonAsync<DisplayViewModel>("/Account/Display");
+    }
 
 }
