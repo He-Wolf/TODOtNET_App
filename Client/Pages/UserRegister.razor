@@ -1,92 +1,64 @@
 @page "/register"
 
+@using TodoApi.Shared.Models
+@using TodoApi.Client.Services
+@inject NavigationManager navigationManager
+@inject IAuthService AuthService
+
 <div class="row mx-2 mb-2 justify-content-md-center">
     <div class="col"></div>
     <div class="col-md-4">
-        <h3>Register a new account!</h3>
-        <RadzenCard>
-                <RadzenTemplateForm Data="@user" Submit="@((User args) => { Submit(args); })">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <RadzenFieldset Text="Register">
-                                <div class="row form-group">
-                                    <div class="col-md-4">
-                                        <RadzenLabel Text="Email Address" />
-                                    </div>
-                                    <div class="col-md-8">
-                                        <RadzenTextBox style="width: 100%;" Name="Email" @bind-Value="user.Email" />
-                                    </div>
-                                </div>
-                                <div class="row form-group">
-                                    <div class="col-md-4">
-                                        <RadzenLabel Text="Firstname" />
-                                    </div>
-                                    <div class="col-md-8">
-                                        <RadzenTextBox style="width: 100%;" Name="Firstname" @bind-Value="user.Firstname" />
-                                    </div>
-                                </div>
-                                <div class="row form-group">
-                                    <div class="col-md-4">
-                                        <RadzenLabel Text="Lastname" />
-                                    </div>
-                                    <div class="col-md-8">
-                                        <RadzenTextBox style="width: 100%;" Name="Lastname" @bind-Value="user.Lastname" />
-                                    </div>
-                                </div>
-                                <div class="row form-group">
-                                    <div class="col-md-4">
-                                        <RadzenLabel Text="Password" />
-                                    </div>
-                                    <div class="col-md-8">
-                                        <RadzenPassword style="width: 100%;" Name="Password" @bind-Value="user.Password" />
-                                    </div>
-                                </div>
-                                <div class="row form-group">
-                                    <div class="col-md-4">
-                                        <RadzenLabel Text="Confirm Password" />
-                                    </div>
-                                    <div class="col-md-8">
-                                        <RadzenPassword style="width: 100%;" Name="ConfirmPassword" @bind-Value="user.ConfirmPassword" />
-                                    </div>
-                                </div>
-                            </RadzenFieldset>
-                        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Please enter your credentials to log in</h5>
+                <EditForm Model="@user" OnValidSubmit="Register">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="form-group">
+                        <label for="inputFirstName">Firstname</label>
+                        <input type="text" class="form-control" id="inputFirstName" @bind-value="user.FirstName" placeholder="Joe">
+                        <ValidationMessage For="@(() => user.FirstName)" />
                     </div>
-                    <div class="row justify-content-center">
-                        <div class="col-md-12 d-flex align-items-end justify-content-center" style="margin-top: 16px;">
-                            <RadzenButton ButtonType="ButtonType.Submit" Icon="check" Text="Register" />
-                            <RadzenButton ButtonStyle="ButtonStyle.Secondary" Icon="cancel" style="display: inline-block; margin-left: 10px;" Text="Cancel" Click="@Cancel" />
-                        </div>
+                    <div class="form-group">
+                        <label for="inputLastName">Lastname</label>
+                        <input type="text" class="form-control" id="inputLasttName" @bind-value="user.LastName" placeholder="Smith">
+                        <ValidationMessage For="@(() => user.LastName)" />
                     </div>
-                </RadzenTemplateForm>
-        </RadzenCard>
+                    <div class="form-group">
+                        <label for="inputEmail">Email address</label>
+                        <input type="email" class="form-control" id="inputEmail" @bind-value="user.Email" placeholder="example@email.com">
+                        <ValidationMessage For="@(() => user.Email)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword">Password</label>
+                        <input type="password" class="form-control" id="inputPassword" @bind-value="user.Password" placeholder="SecretPass123.">
+                        <ValidationMessage For="@(() => user.Password)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="inputConfirmPassword">Confirm Password</label>
+                        <input type="password" class="form-control" id="inputConfirmPassword" @bind-value="user.ConfirmPassword" placeholder="SecretPass123.">
+                        <ValidationMessage For="@(() => user.ConfirmPassword)" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Register</button>
+                    <button type="button" class="btn btn-secondary" @onclick="@(() => { Cancel(); })">Cancel</button>
+                </EditForm>
+            </div>
+        </div>
     </div>
     <div class="col"></div>
 </div>
 
 @code {
-    public class User
+    private RegisterViewModel user = new RegisterViewModel();
+
+    private async Task Register()
     {
-        public string Email { get; set; }
-        public string Firstname { get; set; }
-        public string Lastname { get; set; }
-        public string Password { get; set; }
-        public string ConfirmPassword { get; set; }
-        
+        var result = await AuthService.Register(user);
+        navigationManager.NavigateTo("/dashboard");
     }
 
-    User user = new User()
+    private void Cancel()
     {
-        //
-    };
-
-    void Submit(User arg)
-    {
-        //
-    }
-
-    void Cancel()
-    {
-        //
+        navigationManager.NavigateTo("/");
     }
 }

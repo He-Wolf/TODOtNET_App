@@ -1,36 +1,39 @@
 ﻿@page "/"
 
-<div class="mx-2 mb-2 row row-eq-height">
-    <div class="col-lg-2"></div>
-    <div class="col-lg-4">
-        <RadzenCard class="h-100">
-            <div class="card-body">
-                <p class="card-text">The application was written in C# using the following frameworks and technologies:</p>
-                <ul class="card-text">
-                    <li>ASP.NET Core Blazor Webassembly frontend</li>
-                    <li>Radzen UI</li>
-                    <li>ASP.NET Core backend</li>
-                    <li>SQLite db + Entity Core ORM</li>
-                    <li>Identity Core + JSON Web Token</li>
-                </ul>
-            </div>
-        </RadzenCard>
-    </div>
-    <div class="col-lg-4">
-        <RadzenCard class="h-100">
-            <div class="card-body">
-                <p class="card-text my-2">This is a simple TODO manager web app. After creating your own profile, you can log in with your password and username to manage your profile and todo items.</p>
-                <p class="card-text my-2">You can execute CRUD operations to add, modify, remove and display todo items.</p>
-                <p>Would you like to try it out?</p>
-                <div class="d-flex justify-content-start my-4">
-                        <a href="/login" class="mx-2 btn btn-primary">Login</a>
-                        <p class="mx-2 py-2">OR</p>
-                        <a href="/register" class="mx-2 btn btn-secondary">Sing up</a>
+
+<div class="mx-2 mb-2 row justify-content-md-center">
+    <div class="col"></div>
+    <div class="col-md-7">
+        <div class="card-deck">
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-text">The application was written in C# using the following frameworks and technologies:</p>
+                    <ul class="card-text">
+                        <li>ASP.NET Core Blazor Webassembly frontend</li>
+                        <li>Bootstrap UI components</li>
+                        <li>ASP.NET Core backend</li>
+                        <li>SQLite db + Entity Core ORM</li>
+                        <li>Identity Core + JSON Web Token</li>
+                    </ul>
                 </div>
             </div>
-        </RadzenCard>
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-text my-2">This is a simple TODO manager web app. After creating your own profile, you can log in with your password and username to manage your profile and todo items.</p>
+                    <p class="card-text my-2">You can execute CRUD operations to add, modify, remove and display todo items.</p>
+                    <AuthorizeView>
+                        <NotAuthorized>
+                        <p>Would you like to try it out?</p>
+                        <a href="/login" class="btn btn-primary my-2">Login</a>
+                        <span class="m-2">or</span>
+                        <a href="/register" class="btn btn-secondary my-2">Sing up</a>
+                        </NotAuthorized>
+                    </AuthorizeView>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="col-lg-2"></div>
+    <div class="col"></div>
 </div>
 
 @code{
