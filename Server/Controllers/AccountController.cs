@@ -24,7 +24,6 @@ namespace WebApiJwt.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly SignInManager<WebApiUser> _signInManager;
         private readonly UserManager<WebApiUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
@@ -32,13 +31,11 @@ namespace WebApiJwt.Controllers
 
         public AccountController(
             UserManager<WebApiUser> userManager,
-            SignInManager<WebApiUser> signInManager,
             IConfiguration configuration,
             IMapper mapper,
             ILogger<AccountController> logger)
         {
             _userManager = userManager;
-            _signInManager = signInManager;
             _configuration = configuration;
             _mapper = mapper;
             _logger = logger;
@@ -51,14 +48,16 @@ namespace WebApiJwt.Controllers
         [Route("Login", Name="Login")]
         public async Task<IActionResult> Login([FromBody] LoginViewModel model)
         {
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
-            
-            if (result.Succeeded)
-            {
-                var appUser = _userManager.Users.SingleOrDefault(r => r.Email == model.Email);
-                var token = GenerateJwtToken(appUser);
+            var appUser = await _userManager.FindByEmailAsync(model.Email);
 
-                return Ok(new TokenViewModel(token, "Successful login", DateTime.Now));
+            if (appUser != null)
+            {
+                var result = await _userManager.CheckPasswordAsync(appUser, model.Password);
+                if (result)
+                {
+                    var token = GenerateJwtToken(appUser);
+                    return Ok(new TokenViewModel(token, "Successful login", DateTime.Now));
+                }
             }
             
             return BadRequest(new MessageViewModel("Login failed", DateTime.Now));
@@ -74,7 +73,7 @@ namespace WebApiJwt.Controllers
             // Wait for token to get expired OR
             // Maintain token cache and invalidate the tokens after logout method is called
 
-            await _signInManager.SignOutAsync(); //works only if cookie based authentication is used
+            await Task.FromResult(0);
 
             return Ok(new MessageViewModel("Successful logout.", DateTime.Now));
         }
@@ -99,7 +98,6 @@ namespace WebApiJwt.Controllers
 
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, false);
                     var token = GenerateJwtToken(user);
                     
                     return CreatedAtRoute("Display", null, new TokenViewModel(token, "Successful registration", DateTime.Now));
