@@ -54,7 +54,7 @@ namespace blazor.Server
                 .AddDefaultTokenProviders();
             
             
-            services.AddCors();
+            //services.AddCors();
 
             services
                 .AddAuthentication(options =>
