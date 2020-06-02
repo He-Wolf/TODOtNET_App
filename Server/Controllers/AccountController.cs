@@ -112,7 +112,7 @@ namespace WebApiJwt.Controllers
         [ProducesResponseType(typeof(DisplayViewModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status400BadRequest)]
         [Route("Edit", Name="Edit")]
-        public async Task<IActionResult> Edit([FromBody] RegisterViewModel model)
+        public async Task<IActionResult> Edit([FromBody] DisplayViewModel model)
         {
             var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var CurrentUser = await _userManager.FindByIdAsync(CurrentUserId);
@@ -123,13 +123,40 @@ namespace WebApiJwt.Controllers
                 CurrentUser.LastName = model.LastName;
                 CurrentUser.Email = model.Email;
                 CurrentUser.UserName = model.Email;
-                CurrentUser.PasswordHash = _userManager.PasswordHasher.HashPassword(CurrentUser, model.Password);
 
                 await _userManager.UpdateAsync(CurrentUser);
 
                 return Ok(_mapper.Map<DisplayViewModel>(CurrentUser));
             }
             return BadRequest(new MessageViewModel("Edit failed.", DateTime.Now));
+        }
+
+        [Authorize]
+        [HttpPut]
+        [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(MessageViewModel), StatusCodes.Status400BadRequest)]
+        [Route("ChangePassword", Name="ChangePassword")]
+        public async Task<IActionResult> ChangePassword([FromBody] PasswordViewModel model)
+        {
+            var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var CurrentUser = await _userManager.FindByIdAsync(CurrentUserId);
+
+            if(ModelState.IsValid)
+            {
+                var result = await _userManager.CheckPasswordAsync(CurrentUser, model.CurrentPassword);
+                if (result)
+                {
+                    CurrentUser.PasswordHash = _userManager.PasswordHasher.HashPassword(CurrentUser, model.NewPassword);
+                }
+
+                await _userManager.UpdateAsync(CurrentUser);
+                
+                //or: await _userManager.ChangePasswordAsync(CurrentUser, model.CurrentPassword, model.NewPassword)
+
+                return Ok(new MessageViewModel("Your password changed successfully.", DateTime.Now));
+            }
+            
+            return BadRequest(new MessageViewModel("Password change failed.", DateTime.Now));
         }
 
         [Authorize]

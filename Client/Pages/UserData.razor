@@ -1,0 +1,65 @@
+@attribute [Authorize]
+@using System.Net.Http
+@using System.Net.Http.Headers
+@using System.Net.Http.Json
+@using TodoApi.Shared.Models
+@using TodoApi.Client.Services
+@inject AuthenticationStateProvider _authStateProv
+@inject IJSRuntime _jsRuntime
+@inject HttpClient _httpClient
+
+
+
+<EditForm Model="@user" OnValidSubmit="Apply">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label for="inputFirstname">Firstname:</label>
+        <input type="text" class="form-control" id="inputFirstname" @bind-value="user.FirstName">
+        <ValidationMessage For="@(() => user.FirstName)" />
+    </div>
+    <div class="form-group">
+        <label for="inputLastname">Lastname:</label>
+        <input type="text" class="form-control" id="inputLastname" @bind-value="user.LastName">
+        <ValidationMessage For="@(() => user.LastName)" />
+    </div>
+    <div class="form-group">
+        <label for="inputEmail">Email:</label>
+        <input type="email" class="form-control" id="inputEmail" @bind-value="user.Email">
+        <ValidationMessage For="@(() => user.Email)" />
+    </div>
+    <button type="button" class="btn btn-primary" @onclick="@(() => { Edit(); })">Edit</button>
+    <button type="submit" class="btn btn-primary">Apply</button>
+    <button type="button" class="btn btn-secondary" @onclick="@(() => { Cancel(); })">Cancel</button>
+</EditForm>
+                
+
+@code{
+    DisplayViewModel user = new DisplayViewModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        JWTAuthStateProvider _jwtAuthStateProv = new JWTAuthStateProvider(_jsRuntime);
+        
+        _jwtAuthStateProv = _authStateProv as JWTAuthStateProvider;
+
+        var token = await _jwtAuthStateProv.GetTokenAsync();
+
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+            
+        user = await _httpClient.GetFromJsonAsync<DisplayViewModel>("/Account/Display");
+    }
+    
+    private void Apply()
+    {
+        //
+    }
+    private void Cancel()
+    {
+        //
+    }
+    private void Edit()
+    {
+        //
+    }
+}
