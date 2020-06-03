@@ -17,7 +17,7 @@ namespace TodoApi.Shared.Models
         [Required(ErrorMessage = "Password confirmation is required")]
         [StringLength(255, ErrorMessage = "Must be between 5 and 255 characters", MinimumLength = 5)]
         [DataType(DataType.Password)]
-        [Compare("Password")]
+        [Compare("NewPassword")]
         public string ConfirmNewPassword { get; set; }
 
     }
