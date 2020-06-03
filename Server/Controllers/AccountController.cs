@@ -140,16 +140,21 @@ namespace WebApiJwt.Controllers
         {
             var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var CurrentUser = await _userManager.FindByIdAsync(CurrentUserId);
+            _logger.LogDebug("In the controller");
 
             if(ModelState.IsValid)
             {
+                _logger.LogDebug("Model is valid");
                 var result = await _userManager.CheckPasswordAsync(CurrentUser, model.CurrentPassword);
                 if (result)
                 {
+                    _logger.LogDebug("Password checked");
                     CurrentUser.PasswordHash = _userManager.PasswordHasher.HashPassword(CurrentUser, model.NewPassword);
+                    _logger.LogDebug("Password hashed");
                 }
 
                 await _userManager.UpdateAsync(CurrentUser);
+                _logger.LogDebug("Password updated");
                 
                 //or: await _userManager.ChangePasswordAsync(CurrentUser, model.CurrentPassword, model.NewPassword)
 

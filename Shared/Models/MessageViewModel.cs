@@ -11,5 +11,6 @@ namespace TodoApi.Shared.Models
             this.message = message;
             this.currentDate = currentDate;
         }
+        public MessageViewModel(){}
     }
 }
