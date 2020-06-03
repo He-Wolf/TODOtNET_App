@@ -38,5 +38,6 @@
     private async Task Logout()
     {
         await AuthService.Logout();
+        navigationManager.NavigateTo("/");
     }
 }

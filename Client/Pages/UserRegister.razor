@@ -54,7 +54,7 @@
     private async Task Register()
     {
         var result = await AuthService.Register(user);
-        navigationManager.NavigateTo("/dashboard");
+        navigationManager.NavigateTo("/profile");
     }
 
     private void Cancel()
