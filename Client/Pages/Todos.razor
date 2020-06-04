@@ -16,7 +16,7 @@
         <div class="col-md-4">
             @foreach (var todoItem in todos)
             {
-                <Todo todo.Id=@todoItem.Id todo.Name=@todoItem.Name todo.IsComplete=@todoItem.IsComplete/>
+                <Todo todo.Id="@todoItem.Id" todo.Name="@todoItem.Name" todo.IsComplete="@todoItem.IsComplete"/>
             }
             <TodoAdd/>
         </div>
