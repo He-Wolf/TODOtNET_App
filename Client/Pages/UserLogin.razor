@@ -40,7 +40,7 @@
     private async Task Login()
     {
         var result = await AuthService.Login(user);
-        navigationManager.NavigateTo("/dashboard");
+        navigationManager.NavigateTo("/profile");
     }
 
     private void Register()

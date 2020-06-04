@@ -1,0 +1,36 @@
+@page "/profile"
+@attribute [Authorize]
+
+<AuthorizeView>
+    <div class="row mx-2 mb-2 justify-content-md-center">
+        <div class="col"></div>
+        <div class="col-md-4">
+            <h5>Hello @context.User.Identity.Name,</h5>
+            <p>This is your personal profile. Only you can see it.</p>
+            <div class="card">
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <h5 class="card-title">View your data:</h5>
+                            <UserData/>
+                        </li>
+                        <li class="list-group-item">
+                            <h5 class="card-title">Change your password:</h5>
+                            <UserPassword/>
+                        </li>
+                        <li class="list-group-item">
+                            <h5 class="card-title">Delete your profile:</h5>
+                            <UserDelete/>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col"></div>
+    </div>
+</AuthorizeView>
+
+@code
+{
+
+}

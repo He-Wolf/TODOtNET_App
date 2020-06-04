@@ -1,0 +1,58 @@
+@attribute [Authorize]
+@using System.Net.Http
+@using System.Net.Http.Headers
+@using System.Net.Http.Json
+@using TodoApi.Shared.Models
+@using TodoApi.Client.Services
+@inject AuthenticationStateProvider _authStateProv
+@inject IJSRuntime _jsRuntime
+@inject HttpClient _httpClient
+@inject IAuthService AuthService
+@inject NavigationManager navigationManager
+
+
+@if(!ifDelete)
+{
+    <p>If You want to delete your user profile, press button Delete.</p>
+    <button type="button" class="btn btn-primary" @onclick="@(() => { Delete(); })">Delete</button>
+}
+else
+{
+    <p>Are You sure that You delete all your user data? This action cannot be undone later.</p>
+    <button type="submit" class="btn btn-danger" @onclick="@(async () => { await Confirm(); })">Confirm</button>
+    <button type="button" class="btn btn-secondary" @onclick="@(() => { Cancel(); })">Cancel</button>
+}
+                
+
+@code{
+    private bool ifDelete = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        JWTAuthStateProvider _jwtAuthStateProv = new JWTAuthStateProvider(_jsRuntime);
+        
+        _jwtAuthStateProv = _authStateProv as JWTAuthStateProvider;
+
+        var token = await _jwtAuthStateProv.GetTokenAsync();
+
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+            
+    }
+    
+    private async Task Confirm()
+    {
+        var response = await _httpClient.DeleteAsync("/Account/Delete");
+        var content = await response.Content.ReadFromJsonAsync<MessageViewModel>();
+        await AuthService.Logout();
+        navigationManager.NavigateTo("/");
+    }
+
+    private void Cancel()
+    {
+        ifDelete = false;
+    }
+    private void Delete()
+    {
+        ifDelete = true;
+    }
+}
