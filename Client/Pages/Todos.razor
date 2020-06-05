@@ -10,47 +10,48 @@
 @inject HttpClient _httpClient
 
 
-<AuthorizeView>
-    <div class="row mx-2 mb-2 justify-content-md-center">
-        <div class="col"></div>
-        <div class="col-md-4">
-            @foreach (var todoItem in todos)
-            {
-                <Todo
-                    @key="todoItem"
-                    nowEditedId="@nowEditedId"
-                    todo="@todoItem"
-                    OnManage="@SetManageId"
-                    OnDelete="@DeleteItem"
-                    OnPut="@PutItem"
-                    OnGet="@GetItem">
-                </Todo>
-            }
-            <TodoAdd
+<div class="row mx-2 mb-2 justify-content-md-center">
+    <div class="col"></div>
+    <div class="col-md-4">
+        @foreach (var todoItem in todos)
+        {
+            <Todo
+                @key="todoItem"
                 nowEditedId="@nowEditedId"
+                todo="@todoItem"
                 OnManage="@SetManageId"
-                OnPost="@PostItem">
-            </TodoAdd>
-        </div>
-        <div class="col"></div>
+                OnDelete="@DeleteItem"
+                OnPut="@PutItem"
+                OnGet="@GetItem">
+            </Todo>
+        }
+        <TodoAdd
+            nowEditedId="@nowEditedId"
+            OnManage="@SetManageId"
+            OnPost="@PostItem">
+        </TodoAdd>
     </div>
-</AuthorizeView>
+    <div class="col"></div>
+</div>
 
 @code {
     private List<TodoViewModel> todos { get; set; }
     private long nowEditedId { get; set; }
+
+    //just for temp
+    private long currentId = 5;
     
     protected override async Task OnInitializedAsync()
     {
-        /*JWTAuthStateProvider _jwtAuthStateProv = new JWTAuthStateProvider(_jsRuntime);
+        JWTAuthStateProvider _jwtAuthStateProv = new JWTAuthStateProvider(_jsRuntime);
         
         _jwtAuthStateProv = _authStateProv as JWTAuthStateProvider;
 
-        var token = await _jwtAuthStateProv.GetTokenAsync();
+        //var token = await _jwtAuthStateProv.GetTokenAsync();
 
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+        //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
             
-        todos = await _httpClient.GetFromJsonAsync<List<TodoViewModel>>("/api/TodoItems");*/
+        /*todos = await _httpClient.GetFromJsonAsync<List<TodoViewModel>>("/api/TodoItems");*/
             
         todos = new List<TodoViewModel>
             {
@@ -70,12 +71,17 @@
     {
         //var response = await _httpClient.DeleteAsync($"/api/TodoItems/{todo.Id}");
         //var content = await response.Content.ReadFromJsonAsync<MessageViewModel>();
+        TodoViewModel todoMod = todos.Find(x => x.Id == todo.Id);
+        todos.Remove(todoMod);
         await Task.FromResult(0);
     }
     private async Task PutItem(TodoViewModel todo)
     {
         //var response = await _httpClient.PutAsJsonAsync($"/api/TodoItems/{todo.Id}", todo);
         //var content = await response.Content.ReadFromJsonAsync<TodoViewModel>();
+        TodoViewModel todoMod = todos.Find(x => x.Id == todo.Id);
+        todoMod.Name = todo.Name;
+        todoMod.IsComplete = todo.IsComplete;
         await Task.FromResult(0);
     }
     private async Task GetItem(TodoViewModel todo)
@@ -85,7 +91,9 @@
     }
     private async Task PostItem(TodoViewModel todo)
     {
-        //todo = await _httpClient.PutAsJsonAsync($"/api/TodoItems", todo);
+        //await _httpClient.PostAsJsonAsync($"/api/TodoItems", todo);
+        todos.Add(new TodoViewModel{ Id = currentId, Name = todo.Name, IsComplete = todo.IsComplete});
+        currentId++;
         await Task.FromResult(0);
     }
 }

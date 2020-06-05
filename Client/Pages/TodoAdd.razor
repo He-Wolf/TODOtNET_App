@@ -58,6 +58,9 @@
     {
         ifAddItem = false;
         await OnPost.InvokeAsync(todo);
+        todo.Id = -1;
+        todo.Name = "";
+        todo.IsComplete = false;
     }
     private void Cancel()
     {
