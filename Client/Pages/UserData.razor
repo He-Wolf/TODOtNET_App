@@ -5,7 +5,6 @@
 @using TodoApi.Shared.Models
 @using TodoApi.Client.Services
 @inject AuthenticationStateProvider _authStateProv
-@inject IJSRuntime _jsRuntime
 @inject HttpClient _httpClient
 
 
@@ -58,9 +57,7 @@
     
     protected override async Task OnInitializedAsync()
     {
-        JWTAuthStateProvider _jwtAuthStateProv = new JWTAuthStateProvider(_jsRuntime);
-        
-        _jwtAuthStateProv = _authStateProv as JWTAuthStateProvider;
+        JWTAuthStateProvider _jwtAuthStateProv = _authStateProv as JWTAuthStateProvider;
 
         var token = await _jwtAuthStateProv.GetTokenAsync();
 

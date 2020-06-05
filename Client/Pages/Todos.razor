@@ -6,7 +6,6 @@
 @using TodoApi.Shared.Models
 @using TodoApi.Client.Services
 @inject AuthenticationStateProvider _authStateProv
-@inject IJSRuntime _jsRuntime
 @inject HttpClient _httpClient
 
 
@@ -43,23 +42,19 @@
     
     protected override async Task OnInitializedAsync()
     {
-        JWTAuthStateProvider _jwtAuthStateProv = new JWTAuthStateProvider(_jsRuntime);
-        
-        _jwtAuthStateProv = _authStateProv as JWTAuthStateProvider;
-
-        //var token = await _jwtAuthStateProv.GetTokenAsync();
-
-        //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+        /* JWTAuthStateProvider _jwtAuthStateProv = _authStateProv as JWTAuthStateProvider;
+        var token = await _jwtAuthStateProv.GetTokenAsync();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
             
-        /*todos = await _httpClient.GetFromJsonAsync<List<TodoViewModel>>("/api/TodoItems");*/
+        todos = await _httpClient.GetFromJsonAsync<List<TodoViewModel>>("/api/TodoItems"); */
             
         todos = new List<TodoViewModel>
-            {
-                new TodoViewModel{ Id = 1, Name = "Walk the dog", IsComplete = false},
-                new TodoViewModel{ Id = 2, Name = "Clean the house", IsComplete = true},
-                new TodoViewModel{ Id = 3, Name = "Empty the bin", IsComplete = false},
-                new TodoViewModel{ Id = 4, Name = "Do the groceries", IsComplete = true}
-            };
+        {
+            new TodoViewModel{ Id = 1, Name = "Walk the dog", IsComplete = false},
+            new TodoViewModel{ Id = 2, Name = "Clean the house", IsComplete = true},
+            new TodoViewModel{ Id = 3, Name = "Empty the bin", IsComplete = false},
+            new TodoViewModel{ Id = 4, Name = "Do the groceries", IsComplete = true}
+        };
         await Task.FromResult(0);
     }
 
@@ -69,31 +64,47 @@
     }
     private async Task DeleteItem(TodoViewModel todo)
     {
-        //var response = await _httpClient.DeleteAsync($"/api/TodoItems/{todo.Id}");
-        //var content = await response.Content.ReadFromJsonAsync<MessageViewModel>();
-        TodoViewModel todoMod = todos.Find(x => x.Id == todo.Id);
+        JWTAuthStateProvider _jwtAuthStateProv = _authStateProv as JWTAuthStateProvider;
+        var token = await _jwtAuthStateProv.GetTokenAsync();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+
+        var response = await _httpClient.DeleteAsync($"/api/TodoItems/{todo.Id}");
+        var content = await response.Content.ReadFromJsonAsync<MessageViewModel>();
+        var todoMod = todos.Find(x => x.Id == todo.Id);
         todos.Remove(todoMod);
-        await Task.FromResult(0);
     }
     private async Task PutItem(TodoViewModel todo)
     {
-        //var response = await _httpClient.PutAsJsonAsync($"/api/TodoItems/{todo.Id}", todo);
-        //var content = await response.Content.ReadFromJsonAsync<TodoViewModel>();
-        TodoViewModel todoMod = todos.Find(x => x.Id == todo.Id);
-        todoMod.Name = todo.Name;
-        todoMod.IsComplete = todo.IsComplete;
-        await Task.FromResult(0);
+        JWTAuthStateProvider _jwtAuthStateProv = _authStateProv as JWTAuthStateProvider;
+        var token = await _jwtAuthStateProv.GetTokenAsync();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+
+        var response = await _httpClient.PutAsJsonAsync($"/api/TodoItems/{todo.Id}", new TodoViewModel{Name = todo.Name, IsComplete = todo.IsComplete});
+        var content = await response.Content.ReadFromJsonAsync<TodoViewModel>();
+        var todoMod = todos.Find(x => x.Id == todo.Id);
+        todoMod.Name = content.Name;
+        todoMod.IsComplete = content.IsComplete;
     }
     private async Task GetItem(TodoViewModel todo)
     {
-        //todo = await _httpClient.GetFromJsonAsync<TodoViewModel>($"/api/TodoItems/{todo.Id}");
-        await Task.FromResult(0);
+        JWTAuthStateProvider _jwtAuthStateProv = _authStateProv as JWTAuthStateProvider;
+        var token = await _jwtAuthStateProv.GetTokenAsync();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+
+        var content = await _httpClient.GetFromJsonAsync<TodoViewModel>($"/api/TodoItems/{todo.Id}");
+        var todoMod = todos.Find(x => x.Id == todo.Id);
+        todoMod.Name = content.Name;
+        todoMod.IsComplete = content.IsComplete;
     }
     private async Task PostItem(TodoViewModel todo)
     {
-        //await _httpClient.PostAsJsonAsync($"/api/TodoItems", todo);
-        todos.Add(new TodoViewModel{ Id = currentId, Name = todo.Name, IsComplete = todo.IsComplete});
+        JWTAuthStateProvider _jwtAuthStateProv = _authStateProv as JWTAuthStateProvider;
+        var token = await _jwtAuthStateProv.GetTokenAsync();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+            
+        var response = await _httpClient.PostAsJsonAsync("/api/TodoItems", new TodoViewModel{Name = todo.Name, IsComplete = todo.IsComplete});
+        var content = await response.Content.ReadFromJsonAsync<TodoViewModel>();
+        todos.Add(new TodoViewModel{ Id = content.Id, Name = content.Name, IsComplete = content.IsComplete});
         currentId++;
-        await Task.FromResult(0);
     }
 }

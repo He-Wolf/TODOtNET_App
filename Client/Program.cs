@@ -24,9 +24,9 @@ namespace blazor.Client
             
             builder.Services.AddAuthorizationCore();
 
-            builder.Services.AddScoped<AuthenticationStateProvider, JWTAuthStateProvider>();
+            builder.Services.AddSingleton<AuthenticationStateProvider, JWTAuthStateProvider>();
             
-            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddSingleton<IAuthService, AuthService>();
 
             await builder.Build().RunAsync();
         }
