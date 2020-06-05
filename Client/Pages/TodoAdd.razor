@@ -1,0 +1,68 @@
+@attribute [Authorize]
+
+<div class="card">
+    <div class="card-body">
+        @if(!ifAddItem)
+        {
+            <h5>If You want to add a new TODO item, press button Add Item.</h5>
+            <button type="button" class="btn btn-primary" @onclick="@(() => { AddItem(); })">Add Item</button>
+        }
+        else
+        {
+            <EditForm Model="@todo" OnValidSubmit="Apply">
+                <div class="form-group row">
+                    <label for="inputName" class="col-sm-3 col-form-label">Name:</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="inputName" @bind-value="todo.Name"/>
+                    </div>
+                </div>
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="inputIsComplete" @bind-value="todo.IsComplete">
+                    <label class="form-check-label" for="inputIsComplete">I have done it.</label>
+                </div>
+                    <button type="submit" class="btn btn-primary" @onclick="@(async() => { await Add(); })">Add</button>
+                    <button type="button" class="btn btn-secondary" @onclick="@(async() => { await Cancel(); })">Cancel</button>
+            </EditForm>
+        }
+    </div>
+</div>
+
+@code{
+    [Parameter]
+    public long nowEditedId { get; set; }
+    [Parameter]
+    public EventCallback<long> OnManage { get; set; }
+    [Parameter]
+    public EventCallback<long> OnPost { get; set; }
+
+    public TodoViewModel todo = new TodoViewModel
+    {
+        Id = -1,
+        Name = "",
+        IsComplete = false
+    };
+    private bool ifAddItem = false;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(todo.Id != nowEditedId)
+            await Cancel();
+    }
+    private async Task AddItem()
+    {
+        ifAddItem = true;
+        await OnManage.InvokeAsync(todo.Id);
+    }
+    private async Task Add()
+    {
+        ifAddItem = false;
+        await onPost.InvokeAsync(todo);
+    }
+    private void Cancel()
+    {
+        ifAddItem = false;
+        todo.Id = -1;
+        todo.Name = "";
+        todo.IsComplete = false;
+    }
+}

@@ -1,14 +1,4 @@
 @attribute [Authorize]
-@using System.Net.Http
-@using System.Net.Http.Headers
-@using System.Net.Http.Json
-@using TodoApi.Shared.Models
-@using TodoApi.Client.Services
-@inject AuthenticationStateProvider _authStateProv
-@inject IJSRuntime _jsRuntime
-@inject HttpClient _httpClient
-
-
 
 <div class="card">
     <div class="card-body">
@@ -30,12 +20,12 @@
             }
             else if (ifEdit)
             {
-                <button type="submit" class="btn btn-danger" @onclick="@(async() => { await Confirm(); })">Confirm</button>
+                <button type="submit" class="btn btn-primary" @onclick="@(async() => { await Apply(); })">Apply</button>
                 <button type="button" class="btn btn-secondary" @onclick="@(async() => { await Cancel(); })">Cancel</button>
             }
             else if (ifDelete)
             {
-                <button type="submit" class="btn btn-primary" @onclick="@(async() => { await Apply(); })">Apply</button>
+                <button type="submit" class="btn btn-danger" @onclick="@(async() => { await Confirm(); })">Confirm</button>
                 <button type="button" class="btn btn-secondary" @onclick="@(async() => { await Cancel(); })">Cancel</button>
             }
         </EditForm>
@@ -43,9 +33,22 @@
 </div>
 
 @code{
-    private TodoViewModel todo = new TodoViewModel();
+    [Parameter]
+    public long nowEditedId { get; set; }
+    [Parameter]
+    public TodoViewModel todo { get; set; }
+    [Parameter]
+    public EventCallback<long> OnManage { get; set; }
+    [Parameter]
+    public EventCallback<long> OnDelete { get; set; }
+    [Parameter]
+    public EventCallback<long> OnPut { get; set; }
+    [Parameter]
+    public EventCallback<long> OnGet { get; set; }
+
     private bool ifEdit = false;
     private bool ifDelete = false;
+
     private Dictionary<string, object> NameAttributes { get; set; } =
         new Dictionary<string, object>()
         {
@@ -58,59 +61,44 @@
             { "disabled", "disabled" }
         };
     
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        JWTAuthStateProvider _jwtAuthStateProv = new JWTAuthStateProvider(_jsRuntime);
-        
-        _jwtAuthStateProv = _authStateProv as JWTAuthStateProvider;
-
-        var token = await _jwtAuthStateProv.GetTokenAsync();
-
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
-            
-        //user = await _httpClient.GetFromJsonAsync<DisplayViewModel>("/Account/Display");
+        if(todo.Id != nowEditedId)
+            await Cancel();
     }
     
+    private async Task Edit()
+    {
+        ifEdit = true;
+        NameAttributes.Remove("readonly");
+        NameAttributes["class"] = "form-control";
+        IsCompleteAttributes.Remove("disabled");
+        await OnManage.InvokeAsync(todo.Id);
+    }
+    private async Task Delete()
+    {
+        ifDelete = true;
+        await OnManage.InvokeAsync(todo.Id);
+    }
     private async Task Apply()
     {
-        var response = await _httpClient.PutAsJsonAsync("/api/TodoItems", todo);
-        var content = await response.Content.ReadFromJsonAsync<TodoViewModel>();
-
         ifEdit = false;
         NameAttributes.Add("readonly", "readonly");
         NameAttributes["class"] = "form-control-plaintext";
         IsCompleteAttributes.Add("disabled", "disabled");
-        todo = await _httpClient.GetFromJsonAsync<TodoViewModel>("/api/TodoItems");
+        await onPut.InvokeAsync(todo);
     }
     private async Task Confirm()
     {
-        var response = await _httpClient.PutAsJsonAsync("/api/TodoItems", todo);
-        var content = await response.Content.ReadFromJsonAsync<TodoViewModel>();
-
-        ifEdit = false;
-        NameAttributes.Add("readonly", "readonly");
-        NameAttributes["class"] = "form-control-plaintext";
-        IsCompleteAttributes.Add("disabled", "disabled");
-        todo = await _httpClient.GetFromJsonAsync<TodoViewModel>("/api/TodoItems");
+        await OnDelete.InvokeAsync(todo);
     }
-    private async Task Cancel()
+    private void Cancel()
     {
         ifEdit = false;
         ifDelete = false;
         NameAttributes.Add("readonly", "readonly");
         NameAttributes["class"] = "form-control-plaintext";
         IsCompleteAttributes.Add("disabled", "disabled");
-        todo = await _httpClient.GetFromJsonAsync<TodoViewModel>("/api/TodoItems");
-    }
-    private void Edit()
-    {
-        ifEdit = true;
-        NameAttributes.Remove("readonly");
-        NameAttributes["class"] = "form-control";
-        IsCompleteAttributes.Remove("disabled");
-    }
-    private void Delete()
-    {
-        ifDelete = true;
+        await OnGet.InvokeAsync(todo);
     }
 }

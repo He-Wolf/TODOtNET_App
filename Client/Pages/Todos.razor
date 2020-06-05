@@ -16,9 +16,21 @@
         <div class="col-md-4">
             @foreach (var todoItem in todos)
             {
-                <Todo todo.Id="@todoItem.Id" todo.Name="@todoItem.Name" todo.IsComplete="@todoItem.IsComplete"/>
+                <Todo
+                    @key="todoEntity"
+                    nowEditedId="@nowEditedId"
+                    todo="@todoItem"
+                    OnManage="@SetManageId"
+                    OnDelete="@DeleteItem"
+                    OnPut="@PutItem"
+                    OnGet="@GetItem">
+                </Todo>
             }
-            <TodoAdd/>
+            <TodoAdd
+                nowEditedId="@nowEditedId"
+                OnManage="@SetManageId"
+                OnPost="@PostItem">
+            </TodoAdd>
         </div>
         <div class="col"></div>
     </div>
@@ -26,6 +38,7 @@
 
 @code {
     private List<TodoViewModel> todos;
+    private long nowEditedId { get; set; }
     
     protected override async Task OnInitializedAsync()
     {
@@ -38,5 +51,28 @@
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
             
         todos = await _httpClient.GetFromJsonAsync<List<TodoViewModel>>("/api/TodoItems");
+    }
+
+    private void SetManageId(long Id)
+    {
+        nowEditedId = Id;
+    }
+    private async Task DeleteItem(TodoViewModel todo)
+    {
+        var response = await _httpClient.DeleteAsync($"/api/TodoItems/{todo.Id}");
+        var content = await response.Content.ReadFromJsonAsync<MessageViewModel>();
+    }
+    private async Task PutItem(TodoViewModel todo)
+    {
+        var response = await _httpClient.PutAsJsonAsync($"/api/TodoItems/{todo.Id}", todo);
+        var content = await response.Content.ReadFromJsonAsync<TodoViewModel>();
+    }
+    private async Task GetItem(TodoViewModel todo)
+    {
+        todo = await _httpClient.GetFromJsonAsync<TodoViewModel>($"/api/TodoItems/{todo.Id}");
+    }
+    private async Task PostItem(TodoViewModel todo)
+    {
+        todo = await _httpClient.PutAsJsonAsync($"/api/TodoItems", todo);
     }
 }
