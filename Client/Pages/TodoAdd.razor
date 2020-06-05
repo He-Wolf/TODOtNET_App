@@ -1,15 +1,16 @@
 @attribute [Authorize]
+@using TodoApi.Shared.Models
 
 <div class="card">
     <div class="card-body">
         @if(!ifAddItem)
         {
             <h5>If You want to add a new TODO item, press button Add Item.</h5>
-            <button type="button" class="btn btn-primary" @onclick="@(() => { AddItem(); })">Add Item</button>
+            <button type="button" class="btn btn-primary" @onclick="@(async() => { await AddItem(); })">Add Item</button>
         }
         else
         {
-            <EditForm Model="@todo" OnValidSubmit="Apply">
+            <EditForm Model="@todo" OnValidSubmit="Add">
                 <div class="form-group row">
                     <label for="inputName" class="col-sm-3 col-form-label">Name:</label>
                     <div class="col-sm-9">
@@ -21,7 +22,7 @@
                     <label class="form-check-label" for="inputIsComplete">I have done it.</label>
                 </div>
                     <button type="submit" class="btn btn-primary" @onclick="@(async() => { await Add(); })">Add</button>
-                    <button type="button" class="btn btn-secondary" @onclick="@(async() => { await Cancel(); })">Cancel</button>
+                    <button type="button" class="btn btn-secondary" @onclick="@(() => { Cancel(); })">Cancel</button>
             </EditForm>
         }
     </div>
@@ -33,7 +34,7 @@
     [Parameter]
     public EventCallback<long> OnManage { get; set; }
     [Parameter]
-    public EventCallback<long> OnPost { get; set; }
+    public EventCallback<TodoViewModel> OnPost { get; set; }
 
     public TodoViewModel todo = new TodoViewModel
     {
@@ -43,10 +44,10 @@
     };
     private bool ifAddItem = false;
 
-    protected override async Task OnParametersSetAsync()
+    protected override void OnParametersSet()
     {
         if(todo.Id != nowEditedId)
-            await Cancel();
+            Cancel();
     }
     private async Task AddItem()
     {
@@ -56,7 +57,7 @@
     private async Task Add()
     {
         ifAddItem = false;
-        await onPost.InvokeAsync(todo);
+        await OnPost.InvokeAsync(todo);
     }
     private void Cancel()
     {

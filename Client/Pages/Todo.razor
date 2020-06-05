@@ -1,4 +1,5 @@
 @attribute [Authorize]
+@using TodoApi.Shared.Models
 
 <div class="card">
     <div class="card-body">
@@ -15,8 +16,8 @@
             </div>
             @if(!ifEdit && !ifDelete)
             {
-                <button type="button" class="btn btn-primary" @onclick="@(() => { Edit(); })">Edit</button>
-                <button type="button" class="btn btn-primary" @onclick="@(() => { Delete(); })">Delete</button>
+                <button type="button" class="btn btn-primary" @onclick="@(async() => { await Edit(); })">Edit</button>
+                <button type="button" class="btn btn-primary" @onclick="@(async() => { await Delete(); })">Delete</button>
             }
             else if (ifEdit)
             {
@@ -40,11 +41,11 @@
     [Parameter]
     public EventCallback<long> OnManage { get; set; }
     [Parameter]
-    public EventCallback<long> OnDelete { get; set; }
+    public EventCallback<TodoViewModel> OnDelete { get; set; }
     [Parameter]
-    public EventCallback<long> OnPut { get; set; }
+    public EventCallback<TodoViewModel> OnPut { get; set; }
     [Parameter]
-    public EventCallback<long> OnGet { get; set; }
+    public EventCallback<TodoViewModel> OnGet { get; set; }
 
     private bool ifEdit = false;
     private bool ifDelete = false;
@@ -86,13 +87,13 @@
         NameAttributes.Add("readonly", "readonly");
         NameAttributes["class"] = "form-control-plaintext";
         IsCompleteAttributes.Add("disabled", "disabled");
-        await onPut.InvokeAsync(todo);
+        await OnPut.InvokeAsync(todo);
     }
     private async Task Confirm()
     {
         await OnDelete.InvokeAsync(todo);
     }
-    private void Cancel()
+    private async Task Cancel()
     {
         ifEdit = false;
         ifDelete = false;

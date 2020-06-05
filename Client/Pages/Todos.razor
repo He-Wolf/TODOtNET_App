@@ -17,7 +17,7 @@
             @foreach (var todoItem in todos)
             {
                 <Todo
-                    @key="todoEntity"
+                    @key="todoItem"
                     nowEditedId="@nowEditedId"
                     todo="@todoItem"
                     OnManage="@SetManageId"
@@ -37,12 +37,12 @@
 </AuthorizeView>
 
 @code {
-    private List<TodoViewModel> todos;
+    private List<TodoViewModel> todos { get; set; }
     private long nowEditedId { get; set; }
     
     protected override async Task OnInitializedAsync()
     {
-        JWTAuthStateProvider _jwtAuthStateProv = new JWTAuthStateProvider(_jsRuntime);
+        /*JWTAuthStateProvider _jwtAuthStateProv = new JWTAuthStateProvider(_jsRuntime);
         
         _jwtAuthStateProv = _authStateProv as JWTAuthStateProvider;
 
@@ -50,7 +50,16 @@
 
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
             
-        todos = await _httpClient.GetFromJsonAsync<List<TodoViewModel>>("/api/TodoItems");
+        todos = await _httpClient.GetFromJsonAsync<List<TodoViewModel>>("/api/TodoItems");*/
+            
+        todos = new List<TodoViewModel>
+            {
+                new TodoViewModel{ Id = 1, Name = "Walk the dog", IsComplete = false},
+                new TodoViewModel{ Id = 2, Name = "Clean the house", IsComplete = true},
+                new TodoViewModel{ Id = 3, Name = "Empty the bin", IsComplete = false},
+                new TodoViewModel{ Id = 4, Name = "Do the groceries", IsComplete = true}
+            };
+        await Task.FromResult(0);
     }
 
     private void SetManageId(long Id)
@@ -59,20 +68,24 @@
     }
     private async Task DeleteItem(TodoViewModel todo)
     {
-        var response = await _httpClient.DeleteAsync($"/api/TodoItems/{todo.Id}");
-        var content = await response.Content.ReadFromJsonAsync<MessageViewModel>();
+        //var response = await _httpClient.DeleteAsync($"/api/TodoItems/{todo.Id}");
+        //var content = await response.Content.ReadFromJsonAsync<MessageViewModel>();
+        await Task.FromResult(0);
     }
     private async Task PutItem(TodoViewModel todo)
     {
-        var response = await _httpClient.PutAsJsonAsync($"/api/TodoItems/{todo.Id}", todo);
-        var content = await response.Content.ReadFromJsonAsync<TodoViewModel>();
+        //var response = await _httpClient.PutAsJsonAsync($"/api/TodoItems/{todo.Id}", todo);
+        //var content = await response.Content.ReadFromJsonAsync<TodoViewModel>();
+        await Task.FromResult(0);
     }
     private async Task GetItem(TodoViewModel todo)
     {
-        todo = await _httpClient.GetFromJsonAsync<TodoViewModel>($"/api/TodoItems/{todo.Id}");
+        //todo = await _httpClient.GetFromJsonAsync<TodoViewModel>($"/api/TodoItems/{todo.Id}");
+        await Task.FromResult(0);
     }
     private async Task PostItem(TodoViewModel todo)
     {
-        todo = await _httpClient.PutAsJsonAsync($"/api/TodoItems", todo);
+        //todo = await _httpClient.PutAsJsonAsync($"/api/TodoItems", todo);
+        await Task.FromResult(0);
     }
 }
