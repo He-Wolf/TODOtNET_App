@@ -8,30 +8,36 @@
 @inject AuthenticationStateProvider _authStateProv
 @inject HttpClient _httpClient
 
-
-<div class="row mx-2 mb-2 justify-content-md-center">
-    <div class="col"></div>
-    <div class="col-md-4">
-        @foreach (var todoItem in todos)
-        {
-            <Todo
-                @key="todoItem"
+@if (todos == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row mx-2 mb-2 justify-content-md-center">
+        <div class="col"></div>
+        <div class="col-md-4">
+            @foreach (var todoItem in todos)
+            {
+                <Todo
+                    @key="todoItem"
+                    nowEditedId="@nowEditedId"
+                    todo="@todoItem"
+                    OnManage="@SetManageId"
+                    OnDelete="@DeleteItem"
+                    OnPut="@PutItem"
+                    OnGet="@GetItem">
+                </Todo>
+            }
+            <TodoAdd
                 nowEditedId="@nowEditedId"
-                todo="@todoItem"
                 OnManage="@SetManageId"
-                OnDelete="@DeleteItem"
-                OnPut="@PutItem"
-                OnGet="@GetItem">
-            </Todo>
-        }
-        <TodoAdd
-            nowEditedId="@nowEditedId"
-            OnManage="@SetManageId"
-            OnPost="@PostItem">
-        </TodoAdd>
+                OnPost="@PostItem">
+            </TodoAdd>
+        </div>
+        <div class="col"></div>
     </div>
-    <div class="col"></div>
-</div>
+}
 
 @code {
     private List<TodoViewModel> todos { get; set; }
@@ -41,21 +47,8 @@
     private long currentId = 5;
     
     protected override async Task OnInitializedAsync()
-    {
-        /* JWTAuthStateProvider _jwtAuthStateProv = _authStateProv as JWTAuthStateProvider;
-        var token = await _jwtAuthStateProv.GetTokenAsync();
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
-            
-        todos = await _httpClient.GetFromJsonAsync<List<TodoViewModel>>("/api/TodoItems"); */
-            
-        todos = new List<TodoViewModel>
-        {
-            new TodoViewModel{ Id = 1, Name = "Walk the dog", IsComplete = false},
-            new TodoViewModel{ Id = 2, Name = "Clean the house", IsComplete = true},
-            new TodoViewModel{ Id = 3, Name = "Empty the bin", IsComplete = false},
-            new TodoViewModel{ Id = 4, Name = "Do the groceries", IsComplete = true}
-        };
-        await Task.FromResult(0);
+    {            
+        todos = await _httpClient.GetFromJsonAsync<List<TodoViewModel>>("/api/TodoItems");
     }
 
     private void SetManageId(long Id)

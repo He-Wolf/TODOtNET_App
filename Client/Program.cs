@@ -16,7 +16,7 @@ namespace blazor.Client
             
             builder.RootComponents.Add<App>("app");
 
-            builder.Services.AddTransient(sp =>
+            builder.Services.AddSingleton(sp =>
                 new HttpClient
                 {
                 BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
