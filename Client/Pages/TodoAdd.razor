@@ -6,7 +6,7 @@
         @if(!ifAddItem)
         {
             <h5>If You want to add a new TODO item, press button Add Item.</h5>
-            <button type="button" class="btn btn-primary" @onclick="@(async() => { await AddItem(); })">Add Item</button>
+            <button type="button" class="btn btn-success" @onclick="@(async() => { await AddItem(); })">Add Item</button>
         }
         else
         {
