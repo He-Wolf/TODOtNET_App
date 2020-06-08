@@ -11,7 +11,7 @@
                 </div>
             </div>
             <div class="form-group form-check">
-                <input type="checkbox" @attributes="IsCompleteAttributes" class="form-check-input" id="inputIsComplete" @bind-value="todo.IsComplete">
+                <input type="checkbox" @attributes="IsCompleteAttributes" class="form-check-input" id="inputIsComplete" checked="@todo.IsComplete" @bind-value="todo.IsComplete">
                 <label class="form-check-label" for="inputIsComplete">I have done it.</label>
             </div>
             @if(!ifEdit && !ifDelete)
@@ -67,7 +67,6 @@
         if(todo.Id != nowEditedId)
             await Cancel();
     }
-    
     private async Task Edit()
     {
         ifEdit = true;
