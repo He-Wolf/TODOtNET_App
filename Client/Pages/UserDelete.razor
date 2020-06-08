@@ -19,7 +19,7 @@
 else
 {
     <p>Are You sure that You delete all your user data? This action cannot be undone later.</p>
-    <button type="submit" class="btn btn-danger" @onclick="@(async () => { await Confirm(); })">Confirm</button>
+    <button type="button" class="btn btn-danger" @onclick="@(async () => { await Confirm(); })">Confirm</button>
     <button type="button" class="btn btn-secondary" @onclick="@(() => { Cancel(); })">Cancel</button>
 }
                 
