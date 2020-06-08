@@ -29,14 +29,10 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        JWTAuthStateProvider _jwtAuthStateProv = new JWTAuthStateProvider(_jsRuntime);
-        
+        JWTAuthStateProvider _jwtAuthStateProv = new JWTAuthStateProvider(_jsRuntime);   
         _jwtAuthStateProv = _authStateProv as JWTAuthStateProvider;
-
         var token = await _jwtAuthStateProv.GetTokenAsync();
-
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
-            
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);   
     }
     
     private async Task Confirm()

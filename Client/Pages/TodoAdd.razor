@@ -36,7 +36,7 @@
     [Parameter]
     public EventCallback<TodoViewModel> OnPost { get; set; }
 
-    public TodoViewModel todo = new TodoViewModel
+    private TodoViewModel todo = new TodoViewModel
     {
         Id = -1,
         Name = "",
