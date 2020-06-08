@@ -101,14 +101,14 @@
     }
     private async Task Cancel()
     {
-        if(!ifDelete)
+        if(ifEdit)
         {
             NameAttributes.Add("readonly", "readonly");
             NameAttributes["class"] = "form-control-plaintext";
             IsCompleteAttributes.Add("disabled", "disabled");
         }
-        ifDelete = false;
         ifEdit = false;
+        ifDelete = false;
         ifCancelable = false;
         await OnGet.InvokeAsync(todo);
     }
