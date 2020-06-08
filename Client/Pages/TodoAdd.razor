@@ -21,7 +21,7 @@
                     <input type="checkbox" class="form-check-input" id="inputIsComplete" @bind-value="todo.IsComplete">
                     <label class="form-check-label" for="inputIsComplete">I have done it.</label>
                 </div>
-                    <button type="submit" class="btn btn-primary" @onclick="@(async() => { await Add(); })">Add</button>
+                    <button type="submit" class="btn btn-primary">Add</button>
                     <button type="button" class="btn btn-secondary" @onclick="@(() => { Cancel(); })">Cancel</button>
             </EditForm>
         }

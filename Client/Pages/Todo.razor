@@ -3,7 +3,7 @@
 
 <div class="card">
     <div class="card-body">
-        <EditForm Model="@todo" OnValidSubmit="Apply">
+        <EditForm Model="@todo" OnValidSubmit="Submit">
             <div class="form-group row">
                 <label for="inputName" class="col-sm-3 col-form-label">Name:</label>
                 <div class="col-sm-9">
@@ -21,12 +21,12 @@
             }
             else if (ifEdit)
             {
-                <button type="submit" class="btn btn-primary" @onclick="@(async() => { await Apply(); })">Apply</button>
+                <button type="submit" class="btn btn-primary">Apply</button>
                 <button type="button" class="btn btn-secondary" @onclick="@(async() => { await Cancel(); })">Cancel</button>
             }
             else if (ifDelete)
             {
-                <button type="submit" class="btn btn-danger" @onclick="@(async() => { await Confirm(); })">Confirm</button>
+                <button type="submit" class="btn btn-danger">Confirm</button>
                 <button type="button" class="btn btn-secondary" @onclick="@(async() => { await Cancel(); })">Cancel</button>
             }
         </EditForm>
@@ -49,6 +49,7 @@
 
     private bool ifEdit = false;
     private bool ifDelete = false;
+    private bool ifCancelable = false;
 
     private Dictionary<string, object> NameAttributes { get; set; } =
         new Dictionary<string, object>()
@@ -64,41 +65,51 @@
     
     protected override async Task OnParametersSetAsync()
     {
-        if(todo.Id != nowEditedId)
+        if(todo.Id != nowEditedId && ifCancelable == true)
             await Cancel();
     }
     private async Task Edit()
     {
-        ifEdit = true;
         NameAttributes.Remove("readonly");
         NameAttributes["class"] = "form-control";
         IsCompleteAttributes.Remove("disabled");
+        ifEdit = true;
+        ifCancelable = true;
         await OnManage.InvokeAsync(todo.Id);
     }
     private async Task Delete()
     {
         ifDelete = true;
+        ifCancelable = true;
         await OnManage.InvokeAsync(todo.Id);
     }
-    private async Task Apply()
+    private async Task Submit()
     {
-        ifEdit = false;
-        NameAttributes.Add("readonly", "readonly");
-        NameAttributes["class"] = "form-control-plaintext";
-        IsCompleteAttributes.Add("disabled", "disabled");
-        await OnPut.InvokeAsync(todo);
-    }
-    private async Task Confirm()
-    {
-        await OnDelete.InvokeAsync(todo);
+        if(ifEdit)
+        {
+            NameAttributes.Add("readonly", "readonly");
+            NameAttributes["class"] = "form-control-plaintext";
+            IsCompleteAttributes.Add("disabled", "disabled");
+            ifEdit = false;
+            ifCancelable = false;
+            await OnPut.InvokeAsync(todo);
+        }
+        else if (ifDelete)
+        {
+            await OnDelete.InvokeAsync(todo);
+        }
     }
     private async Task Cancel()
     {
-        ifEdit = false;
+        if(!ifDelete)
+        {
+            NameAttributes.Add("readonly", "readonly");
+            NameAttributes["class"] = "form-control-plaintext";
+            IsCompleteAttributes.Add("disabled", "disabled");
+        }
         ifDelete = false;
-        NameAttributes.Add("readonly", "readonly");
-        NameAttributes["class"] = "form-control-plaintext";
-        IsCompleteAttributes.Add("disabled", "disabled");
+        ifEdit = false;
+        ifCancelable = false;
         await OnGet.InvokeAsync(todo);
     }
 }
