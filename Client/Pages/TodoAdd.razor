@@ -12,14 +12,10 @@
         {
             <EditForm Model="@todo" OnValidSubmit="Add">
                 <div class="form-group row">
-                    <label for="inputName" class="col-sm-3 col-form-label">Name:</label>
+                    <label for="inputName" class="col-sm-3 col-form-label">Label:</label>
                     <div class="col-sm-9">
                         <input type="text" class="form-control" id="inputName" @bind-value="todo.Name"/>
                     </div>
-                </div>
-                <div class="form-group form-check">
-                    <input type="checkbox" class="form-check-input" id="inputIsComplete" @bind-value="todo.IsComplete">
-                    <label class="form-check-label" for="inputIsComplete">I have done it.</label>
                 </div>
                     <button type="submit" class="btn btn-primary">Add</button>
                     <button type="button" class="btn btn-secondary" @onclick="@(() => { Cancel(); })">Cancel</button>

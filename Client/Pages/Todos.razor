@@ -14,23 +14,51 @@ else
     <div class="row mx-2 mb-2 justify-content-md-center">
         <div class="col"></div>
         <div class="col-md-4">
-            @foreach (var todoItem in todos)
-            {
-                <Todo
-                    @key="todoItem"
-                    nowEditedId="@nowEditedId"
-                    todo="@todoItem"
-                    OnManage="@SetManageId"
-                    OnDelete="@DeleteItem"
-                    OnPut="@PutItem"
-                    OnGet="@GetItem">
-                </Todo>
-            }
             <TodoAdd
                 nowEditedId="@nowEditedId"
                 OnManage="@SetManageId"
                 OnPost="@PostItem">
             </TodoAdd>
+        </div>
+        <div class="col"></div>
+    </div>
+    <div class="row mx-2 mb-2 justify-content-md-center">
+        <div class="col"></div>
+        <div class="col-md-4">
+            <h5>TO DO</h5>
+            @foreach (var todoItem in todos)
+            {
+                @if(!todoItem.IsComplete)
+                {
+                    <Todo
+                        @key="todoItem"
+                        nowEditedId="@nowEditedId"
+                        todo="@todoItem"
+                        OnManage="@SetManageId"
+                        OnDelete="@DeleteItem"
+                        OnPut="@PutItem"
+                        OnGet="@GetItem">
+                    </Todo>
+                }
+            }
+        </div>
+        <div class="col-md-4">
+            <h5>DONE</h5>
+            @foreach (var todoItem in todos)
+            {
+                @if(todoItem.IsComplete)
+                {
+                    <Todo
+                        @key="todoItem"
+                        nowEditedId="@nowEditedId"
+                        todo="@todoItem"
+                        OnManage="@SetManageId"
+                        OnDelete="@DeleteItem"
+                        OnPut="@PutItem"
+                        OnGet="@GetItem">
+                    </Todo>
+                }
+            }
         </div>
         <div class="col"></div>
     </div>
