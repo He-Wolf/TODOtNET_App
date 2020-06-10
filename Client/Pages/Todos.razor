@@ -1,0 +1,80 @@
+﻿@page "/todos"
+@attribute [Authorize]
+@using System.Net.Http
+@using System.Net.Http.Json
+@using TodoApi.Shared.Models
+@inject HttpClient _httpClient
+
+@if (todos == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row mx-2 mb-2 justify-content-md-center">
+        <div class="col"></div>
+        <div class="col-md-4">
+            @foreach (var todoItem in todos)
+            {
+                <Todo
+                    @key="todoItem"
+                    nowEditedId="@nowEditedId"
+                    todo="@todoItem"
+                    OnManage="@SetManageId"
+                    OnDelete="@DeleteItem"
+                    OnPut="@PutItem"
+                    OnGet="@GetItem">
+                </Todo>
+            }
+            <TodoAdd
+                nowEditedId="@nowEditedId"
+                OnManage="@SetManageId"
+                OnPost="@PostItem">
+            </TodoAdd>
+        </div>
+        <div class="col"></div>
+    </div>
+}
+
+@code {
+    private List<TodoViewModel> todos { get; set; }
+    private long nowEditedId { get; set; }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        todos = await _httpClient.GetFromJsonAsync<List<TodoViewModel>>("/api/TodoItems");
+    }
+
+    private void SetManageId(long Id)
+    {
+        nowEditedId = Id;
+    }
+    private async Task DeleteItem(TodoViewModel todo)
+    {
+        var response = await _httpClient.DeleteAsync($"/api/TodoItems/{todo.Id}");
+        var content = await response.Content.ReadFromJsonAsync<MessageViewModel>();
+        var todoMod = todos.Find(x => x.Id == todo.Id);
+        todos.Remove(todoMod);
+    }
+    private async Task PutItem(TodoViewModel todo)
+    {
+        var response = await _httpClient.PutAsJsonAsync($"/api/TodoItems/{todo.Id}", todo);
+        var content = await response.Content.ReadFromJsonAsync<TodoViewModel>();
+        var todoMod = todos.Find(x => x.Id == todo.Id);
+        todoMod.Name = content.Name;
+        todoMod.IsComplete = content.IsComplete;
+    }
+    private async Task GetItem(TodoViewModel todo)
+    {
+        var content = await _httpClient.GetFromJsonAsync<TodoViewModel>($"/api/TodoItems/{todo.Id}");
+        var todoMod = todos.Find(x => x.Id == todo.Id);
+        todoMod.Name = content.Name;
+        todoMod.IsComplete = content.IsComplete;
+    }
+    private async Task PostItem(TodoViewModel todo)
+    {            
+        var response = await _httpClient.PostAsJsonAsync("/api/TodoItems", new TodoViewModel{Name = todo.Name, IsComplete = todo.IsComplete});
+        var content = await response.Content.ReadFromJsonAsync<TodoViewModel>();
+        todos.Add(new TodoViewModel{ Id = content.Id, Name = content.Name, IsComplete = content.IsComplete});
+    }
+}

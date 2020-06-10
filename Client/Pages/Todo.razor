@@ -1,0 +1,115 @@
+@attribute [Authorize]
+@using TodoApi.Shared.Models
+
+<div class="card">
+    <div class="card-body">
+        <EditForm Model="@todo" OnValidSubmit="Submit">
+            <div class="form-group row">
+                <label for="inputName" class="col-sm-3 col-form-label">Name:</label>
+                <div class="col-sm-9">
+                    <input type="text" @attributes="NameAttributes" id="inputName" @bind-value="todo.Name"/>
+                </div>
+            </div>
+            <div class="form-group form-check">
+                <input type="checkbox" @attributes="IsCompleteAttributes" class="form-check-input" id="inputIsComplete" checked="@todo.IsComplete" @bind-value="todo.IsComplete">
+                <label class="form-check-label" for="inputIsComplete">I have done it.</label>
+            </div>
+            @if(!ifEdit && !ifDelete)
+            {
+                <button type="button" class="btn btn-primary" @onclick="@(async() => { await Edit(); })">Edit</button>
+                <button type="button" class="btn btn-primary" @onclick="@(async() => { await Delete(); })">Delete</button>
+            }
+            else if (ifEdit)
+            {
+                <button type="submit" class="btn btn-primary">Apply</button>
+                <button type="button" class="btn btn-secondary" @onclick="@(async() => { await Cancel(); })">Cancel</button>
+            }
+            else if (ifDelete)
+            {
+                <button type="submit" class="btn btn-danger">Confirm</button>
+                <button type="button" class="btn btn-secondary" @onclick="@(async() => { await Cancel(); })">Cancel</button>
+            }
+        </EditForm>
+    </div>
+</div>
+
+@code{
+    [Parameter]
+    public long nowEditedId { get; set; }
+    [Parameter]
+    public TodoViewModel todo { get; set; }
+    [Parameter]
+    public EventCallback<long> OnManage { get; set; }
+    [Parameter]
+    public EventCallback<TodoViewModel> OnDelete { get; set; }
+    [Parameter]
+    public EventCallback<TodoViewModel> OnPut { get; set; }
+    [Parameter]
+    public EventCallback<TodoViewModel> OnGet { get; set; }
+
+    private bool ifEdit = false;
+    private bool ifDelete = false;
+    private bool ifCancelable = false;
+
+    private Dictionary<string, object> NameAttributes { get; set; } =
+        new Dictionary<string, object>()
+        {
+            { "readonly", "readonly" },
+            { "class", "form-control-plaintext" }
+        };
+    private Dictionary<string, object> IsCompleteAttributes { get; set; } =
+        new Dictionary<string, object>()
+        {
+            { "disabled", "disabled" }
+        };
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        if(todo.Id != nowEditedId && ifCancelable == true)
+            await Cancel();
+    }
+    private async Task Edit()
+    {
+        NameAttributes.Remove("readonly");
+        NameAttributes["class"] = "form-control";
+        IsCompleteAttributes.Remove("disabled");
+        ifEdit = true;
+        ifCancelable = true;
+        await OnManage.InvokeAsync(todo.Id);
+    }
+    private async Task Delete()
+    {
+        ifDelete = true;
+        ifCancelable = true;
+        await OnManage.InvokeAsync(todo.Id);
+    }
+    private async Task Submit()
+    {
+        if(ifEdit)
+        {
+            NameAttributes.Add("readonly", "readonly");
+            NameAttributes["class"] = "form-control-plaintext";
+            IsCompleteAttributes.Add("disabled", "disabled");
+            ifEdit = false;
+            ifCancelable = false;
+            await OnPut.InvokeAsync(todo);
+        }
+        else if (ifDelete)
+        {
+            await OnDelete.InvokeAsync(todo);
+        }
+    }
+    private async Task Cancel()
+    {
+        if(ifEdit)
+        {
+            NameAttributes.Add("readonly", "readonly");
+            NameAttributes["class"] = "form-control-plaintext";
+            IsCompleteAttributes.Add("disabled", "disabled");
+        }
+        ifEdit = false;
+        ifDelete = false;
+        ifCancelable = false;
+        await OnGet.InvokeAsync(todo);
+    }
+}

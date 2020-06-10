@@ -1,53 +1,55 @@
 @attribute [Authorize]
 @using System.Net.Http
-@using System.Net.Http.Headers
 @using System.Net.Http.Json
 @using TodoApi.Shared.Models
-@using TodoApi.Client.Services
-@inject AuthenticationStateProvider _authStateProv
-@inject IJSRuntime _jsRuntime
 @inject HttpClient _httpClient
 
 
-
-<EditForm Model="@user" OnValidSubmit="Apply">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <div class="form-group row">
-        <label for="inputFirstname" class="col-sm-3 col-form-label">Firstname:</label>
-        <div class="col-sm-9">
-            <input type="text" @attributes="InputAttributes" id="inputFirstname" @bind-value="user.FirstName"/>
+@if (user == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <EditForm Model="@user" OnValidSubmit="Apply">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group row">
+            <label for="inputFirstname" class="col-sm-3 col-form-label">Firstname:</label>
+            <div class="col-sm-9">
+                <input type="text" @attributes="InputAttributes" id="inputFirstname" @bind-value="user.FirstName"/>
+            </div>
+            <ValidationMessage For="@(() => user.FirstName)" />
         </div>
-        <ValidationMessage For="@(() => user.FirstName)" />
-    </div>
-    <div class="form-group row">
-        <label for="inputLastname" class="col-sm-3 col-form-label">Lastname:</label>
-        <div class="col-sm-9">
-            <input type="text" @attributes="InputAttributes" id="inputLastname" @bind-value="user.LastName"/>
+        <div class="form-group row">
+            <label for="inputLastname" class="col-sm-3 col-form-label">Lastname:</label>
+            <div class="col-sm-9">
+                <input type="text" @attributes="InputAttributes" id="inputLastname" @bind-value="user.LastName"/>
+            </div>
+            <ValidationMessage For="@(() => user.LastName)" />
         </div>
-        <ValidationMessage For="@(() => user.LastName)" />
-    </div>
-    <div class="form-group row">
-        <label for="inputEmail" class="col-sm-3 col-form-label">Email:</label>
-        <div class="col-sm-9">
-            <input type="email" @attributes="InputAttributes" id="inputEmail" @bind-value="user.Email"/>
+        <div class="form-group row">
+            <label for="inputEmail" class="col-sm-3 col-form-label">Email:</label>
+            <div class="col-sm-9">
+                <input type="email" @attributes="InputAttributes" id="inputEmail" @bind-value="user.Email"/>
+            </div>
+            <ValidationMessage For="@(() => user.Email)" />
         </div>
-        <ValidationMessage For="@(() => user.Email)" />
-    </div>
-    @if(!ifEdit)
-    {
-        <button type="button" class="btn btn-primary" @onclick="@(() => { Edit(); })">Edit</button>
-    }
-    else
-    {
-        <button type="submit" class="btn btn-primary" @onclick="@(async() => { await Apply(); })">Apply</button>
-        <button type="button" class="btn btn-secondary" @onclick="@(async() => { await Cancel(); })">Cancel</button>
-    }
-</EditForm>
+        @if(!ifEdit)
+        {
+            <button type="button" class="btn btn-primary" @onclick="@(() => { Edit(); })">Edit</button>
+        }
+        else
+        {
+            <button type="submit" class="btn btn-primary">Apply</button>
+            <button type="button" class="btn btn-secondary" @onclick="@(async() => { await Cancel(); })">Cancel</button>
+        }
+    </EditForm>
+}
                 
 
 @code{
-    private DisplayViewModel user = new DisplayViewModel();
+    private DisplayViewModel user { get; set; }
     private bool ifEdit = false;
     private Dictionary<string, object> InputAttributes { get; set; } =
         new Dictionary<string, object>()
@@ -58,14 +60,6 @@
     
     protected override async Task OnInitializedAsync()
     {
-        JWTAuthStateProvider _jwtAuthStateProv = new JWTAuthStateProvider(_jsRuntime);
-        
-        _jwtAuthStateProv = _authStateProv as JWTAuthStateProvider;
-
-        var token = await _jwtAuthStateProv.GetTokenAsync();
-
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
-            
         user = await _httpClient.GetFromJsonAsync<DisplayViewModel>("/Account/Display");
     }
     

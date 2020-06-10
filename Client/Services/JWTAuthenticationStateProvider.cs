@@ -6,16 +6,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace TodoApi.Client.Services
 {
     public class JWTAuthStateProvider : AuthenticationStateProvider
     {
         private readonly IJSRuntime _jsRuntime;
+        private readonly HttpClient _httpClient;
 
-        public JWTAuthStateProvider(IJSRuntime jsRuntime)
+        public JWTAuthStateProvider(IJSRuntime jsRuntime, HttpClient httpClient)
         {
             _jsRuntime = jsRuntime;
+            _httpClient = httpClient;
         }
         
         public async Task<string> GetTokenAsync()
@@ -37,13 +41,32 @@ namespace TodoApi.Client.Services
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var token = await GetTokenAsync();
+            var user = new ClaimsPrincipal(new ClaimsIdentity());
+            //Checks if token present
+            if(string.IsNullOrEmpty(token))
+            {
+                return new AuthenticationState(user);
+            }
 
-            var identity = string.IsNullOrEmpty(token)
-                ? new ClaimsIdentity()
-                : new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
+            var claims = ParseClaimsFromJwt(token);
+            // Checks the exp field of the token
+            var expiry = claims.Where(claim => claim.Type.Equals("exp")).FirstOrDefault();
+            if (expiry == null)
+            {
+                return new AuthenticationState(user);
+            }
+
+            // The exp field is in Unix time
+            var datetime = DateTimeOffset.FromUnixTimeSeconds(long.Parse(expiry.Value));
+
+            if (datetime.UtcDateTime <= DateTime.UtcNow)
+            {
+                return new AuthenticationState(user);
+            }
                 
-            var user = new ClaimsPrincipal(identity);
-
+            user = new ClaimsPrincipal(new ClaimsIdentity(claims, "jwt"));
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+            
             return new AuthenticationState(user);
         }
 

@@ -201,13 +201,13 @@ namespace WebApiJwt.Controllers
             //_logger.LogInformation("user.id: {user.id}", user.Id);
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["Jwt:Expiration"]));
+            var expiry = DateTime.Now.AddMinutes(Convert.ToInt32(_configuration["Jwt:Expiration"]));
 
             var token = new JwtSecurityToken(
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Audience"],
                 claims,
-                expires: expires,
+                expires: expiry,
                 signingCredentials: creds
             );
             
