@@ -1,14 +1,11 @@
 @attribute [Authorize]
 @using System.Net.Http
-@using System.Net.Http.Headers
 @using System.Net.Http.Json
 @using TodoApi.Shared.Models
 @using TodoApi.Client.Services
-@inject AuthenticationStateProvider _authStateProv
-@inject IJSRuntime _jsRuntime
-@inject HttpClient _httpClient
 @inject IAuthService AuthService
 @inject NavigationManager navigationManager
+@inject HttpClient _httpClient
 
 
 @if(!ifDelete)
@@ -26,14 +23,6 @@ else
 
 @code{
     private bool ifDelete = false;
-
-    protected override async Task OnInitializedAsync()
-    {
-        JWTAuthStateProvider _jwtAuthStateProv = new JWTAuthStateProvider(_jsRuntime);   
-        _jwtAuthStateProv = _authStateProv as JWTAuthStateProvider;
-        var token = await _jwtAuthStateProv.GetTokenAsync();
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);   
-    }
     
     private async Task Confirm()
     {
