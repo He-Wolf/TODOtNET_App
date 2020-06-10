@@ -5,7 +5,7 @@
     <div class="card-body">
         <EditForm Model="@todo" OnValidSubmit="Submit">
             <div class="form-group row">
-                <label for="inputName" class="col-sm-3 col-form-label">Name:</label>
+                <label for="inputName" class="col-sm-3 col-form-label">Label:</label>
                 <div class="col-sm-9">
                     <input type="text" @attributes="NameAttributes" id="inputName" @bind-value="todo.Name"/>
                 </div>
@@ -15,8 +15,11 @@
                 <label class="form-check-label" for="inputIsComplete">I have done it.</label>
             </div>
             @if(!ifEdit && !ifDelete)
-            {
-                <button type="button" class="btn btn-primary" @onclick="@(async() => { await Edit(); })">Edit</button>
+            {   
+                @if(!todo.IsComplete)
+                {
+                    <button type="button" class="btn btn-primary" @onclick="@(async() => { await Edit(); })">Edit</button>
+                }
                 <button type="button" class="btn btn-primary" @onclick="@(async() => { await Delete(); })">Delete</button>
             }
             else if (ifEdit)
