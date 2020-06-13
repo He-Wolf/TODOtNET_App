@@ -90,36 +90,15 @@ This application needs to be extended with exception handling and more response 
 - OpenID Connect & IdentityServer4
 - automated unit and integration tests
 ## 8. Resources <a name="resources"></a>
-There are several online source which I used to create this web app.\
-Including but not limited to:
-- Microsoft:
-	- https://docs.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-3.1
-	- https://docs.microsoft.com/en-us/aspnet/core/mvc/overview?view=aspnetcore-3.1
-	- https://docs.microsoft.com/en-us/aspnet/core/fundamentals/?view=aspnetcore-3.1
-	- https://docs.microsoft.com/en-us/ef/core/
-	- https://docs.microsoft.com/en-us/dotnet/csharp/
-- Tutorialspoint:
-	- https://www.tutorialspoint.com/csharp/
-	- https://www.tutorialspoint.com/asp.net_core/
-	- https://www.tutorialspoint.com/asp.net_mvc/index.htm
-	- https://www.tutorialspoint.com/entity_framework/index.htm
-	- https://www.tutorialspoint.com/linq/index.htm
-- TutorialsTeacher:
-	- https://www.tutorialsteacher.com/core
-	- https://www.tutorialsteacher.com/webapi/web-api-tutorials
-	- https://www.tutorialsteacher.com/mvc/asp.net-mvc-tutorials
-	- https://www.tutorialsteacher.com/csharp/csharp-tutorials
-	- https://www.tutorialsteacher.com/linq/linq-tutorials
-	- https://www.entityframeworktutorial.net/efcore/entity-framework-core.aspx
-- JWT:
-	- https://medium.com/@ozgurgul/asp-net-core-2-0-webapi-jwt-authentication-with-identity-mysql-3698eeba6ff8
-	- https://dotnetdetail.net/asp-net-core-3-0-web-api-token-based-authentication-example-using-jwt-in-vs2019/
-	- https://code-maze.com/authentication-aspnetcore-jwt-1/
-	- https://fullstackmark.com/post/19/jwt-authentication-flow-with-refresh-tokens-in-aspnet-core-web-api
-	- https://www.c-sharpcorner.com/article/jwt-json-web-token-authentication-in-asp-net-core/
-	- https://www.c-sharpcorner.com/article/asp-net-core-2-0-bearer-authentication/
-	- https://www.blinkingcaret.com/2017/09/06/secure-web-api-in-asp-net-core/
-	- https://salslab.com/a/jwt-authentication-and-authorisation-in-asp-net-core-web-api
-	- https://jasonwatmore.com/post/2019/10/11/aspnet-core-3-jwt-authentication-tutorial-with-example-api
+There are several online source which I used for creating this web app.
+I reused my TODOtNET_API RESTful API project as a backend for this application. All the resources that are listed in the README.md at that repo applies here as well.\
+Blazor resource - Including but not limited to:
+- https://chrissainty.com/securing-your-blazor-apps-authentication-with-clientside-blazor-using-webapi-aspnet-core-identity/
+- https://www.mikesdotnetting.com/article/342/managing-authentication-token-expiry-in-webassembly-based-blazor
+- https://github.com/SteveSandersonMS/presentation-2019-06-NDCOslo
+- https://medium.com/@st.mas29/microsoft-blazor-web-api-with-jwt-authentication-part-1-f33a44abab9d
+- https://blazor-university.com/
+- https://blazor-tutorial.net/
+- https://studyblazor.com/
 
 Thank to every hero on Stackoverflow and Github who helped me with their comments! (Not all heroes wear capes.)
