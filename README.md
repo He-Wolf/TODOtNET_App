@@ -14,17 +14,19 @@
 8. [Resources](#resources)
 
 ## 1. Introduction <a name="introduction"></a>
-This is a basic ASP.NET Core RESTful web API with CRUD operations and user login/account management. You can register a new user account with your email address, name and password. After successful registration, you can log in and add, edit, remove and track TODO items. You can also edit your account data and delete your account. This app was created for learning purpose, but is might be useful as a starting-point for other projects.
+This is a basic ASP.NET Core hosted SPA using Blazor Webassembly with CRUD operations and user login/account management. You can register a new user account with your email address, name and password. After successful registration, you can log in and add, edit, remove and track TODO items. You can also edit your account data and delete your account. This app was created for learning purpose, but is might be useful as a starting-point for other projects.
 
-The API uses:
-- JWT for authentication,
+The backend uses:
+- JWT for authentication
 - Entity Core as ORM
 - Identity Core for identity management
 - SQLite for DB management
-- Swashbuckle as Swagger
+
+The frontend uses:
+- Blazor Webassembly
+- Bootstrap
 
 Tooling:
-- Postman for testing
 - Git Extensions as git gui
 - VSC as text editor
 - Docker for containerization
@@ -33,7 +35,7 @@ Tooling:
 If any question, please do not hesitate to contact me.
 
 ## 2. Used SDK version <a name="used-sdk-version"></a>
-.NET Core SDK v3.1.201
+.NET Core SDK v3.1.301
 ## 3. Used tools <a name="used-tools"></a>
 - dotnet-ef
 - dotnet-aspnet-codegenerator
@@ -47,9 +49,16 @@ If any question, please do not hesitate to contact me.
 - Microsoft.EntityFrameworkCore.SqlServer v3.1.2
 - Microsoft.IdentityModel.Tokens v6.5.0
 - Microsoft.VisualStudio.Web.CodeGeneration.Design v3.1.1
-- Swashbuckle.AspNetCore v5.3.3
-- Swashbuckle.AspNetCore.Newtonsoft v5.3.3
+- Microsoft.AspNetCore.Components.WebAssembly.Server 3.2.0
 - AutoMapper.Extensions.Microsoft.DependencyInjection v7.0.0
+
+- Microsoft.AspNetCore.Components.Authorization v3.1.4
+- Microsoft.AspNetCore.Components.WebAssembly v3.2.0
+- Microsoft.AspNetCore.Components.WebAssembly.Build v3.2.0
+- Microsoft.AspNetCore.Components.WebAssembly.DevServer v3.2.0
+- System.Net.Http.Json v3.2.0
+
+-System.ComponentModel.Annotations v4.7.0
 ## 5. How to run the API <a name="how-to-run-the-app"></a>
 ### 5.1. Build and run with Docker <a name="build-and-run-with-docker"></a>
 - download and install Docker
