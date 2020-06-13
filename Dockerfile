@@ -3,10 +3,6 @@
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-nanoserver-1809 AS build
 WORKDIR /app
-COPY *.sln .
-COPY ["Server/blazor.Server.csproj", "Server/"]
-COPY ["Client/blazor.Client.csproj", "Client/"]
-COPY ["Shared/blazor.Shared.csproj", "Shared/"]
 COPY . .
 WORKDIR "/app/Server"
 RUN dotnet publish "blazor.Server.csproj" -c Release -o out
