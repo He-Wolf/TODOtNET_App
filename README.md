@@ -67,16 +67,17 @@ Shared:
 - download and install Docker
 - clone or download the content of the repository
 - open a terminal and navigate to the containing folder
-- write "docker build -t todowebapi:v1 ." and press Enter
-- write "docker run -it --rm -p 5000:5000 todowebapi:v1" and press Enter
+- write "docker build -t todowebapp:v1 ." and press Enter
+- write "docker run -it --rm -p 5000:5000 todowebapp:v1" and press Enter
 ### 5.2. Build and run with SDK <a name="build-and-run-with-sdk"></a>
-- download and install .NET Core SDK version v3.1.201 or greater (latest 3.1)
+- download and install .NET Core SDK version v3.1.301 or greater (latest 3.1)
 - clone or download the content of the repository
 - open a terminal and navigate to the containing folder
 - write "dotnet restore" and press Enter
+- navigate to folder Server
 - write "dotnet run" and press Enter
 ### 5.3. Test and stop <a name="test-and-stop"></a>
-- if no error message in the terminal, open your browser (recommended: latest Chrome, Firefox, Safari, Edge Chromium or Chromium) and open: http://localhost:5000/swagger
+- if no error message in the terminal, open your browser (recommended: latest Chrome, Firefox, Safari, Edge Chromium or Chromium) and open: http://localhost:5000
 - first register a user account, then log in and after that you can manage your TODO items and account
 - after testing go back to the terminal and press "Ctrl+C" to stop the web server
 ## 6. Limitations <a name="limitations"></a>
@@ -87,7 +88,6 @@ This application needs to be extended with exception handling and more response 
 - Facebook sign-in
 - adding roles (admin, user)
 - OpenID Connect & IdentityServer4
-- SPA frontend (Blazor webassembly)
 - automated unit and integration tests
 ## 8. Resources <a name="resources"></a>
 There are several online source which I used to create this web app.\
