@@ -40,6 +40,7 @@ If any question, please do not hesitate to contact me.
 - dotnet-ef
 - dotnet-aspnet-codegenerator
 ## 4. Used packages <a name="used-packages"></a>
+Backend:
 - Microsoft.AspNetCore.Authentication.JwtBearer v3.1.3
 - Microsoft.AspNetCore.Identity v2.2.0
 - Microsoft.AspNetCore.Identity.EntityFrameworkCore v3.1.3
@@ -52,13 +53,15 @@ If any question, please do not hesitate to contact me.
 - Microsoft.AspNetCore.Components.WebAssembly.Server 3.2.0
 - AutoMapper.Extensions.Microsoft.DependencyInjection v7.0.0
 
+Frontend:
 - Microsoft.AspNetCore.Components.Authorization v3.1.4
 - Microsoft.AspNetCore.Components.WebAssembly v3.2.0
 - Microsoft.AspNetCore.Components.WebAssembly.Build v3.2.0
 - Microsoft.AspNetCore.Components.WebAssembly.DevServer v3.2.0
 - System.Net.Http.Json v3.2.0
 
--System.ComponentModel.Annotations v4.7.0
+Shared:
+- System.ComponentModel.Annotations v4.7.0
 ## 5. How to run the API <a name="how-to-run-the-app"></a>
 ### 5.1. Build and run with Docker <a name="build-and-run-with-docker"></a>
 - download and install Docker
